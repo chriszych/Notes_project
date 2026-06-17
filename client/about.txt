@@ -1,0 +1,4 @@
+frontend(react)client  ---------> backend (node) server ------------> database (postrges) server
+ - getting / sending info		- API				- useres DB
+ - user login / registration		- routes			- notes DB
+ - CRUD	for notes			- database queries

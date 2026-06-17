@@ -1,0 +1,249 @@
+🧭 1. Architektura projektu (wysoki poziom)
+Twoja aplikacja to klasyczny układ:
+
+Frontend (React)
+UI do logowania, rejestracji, przeglądania i edycji notatek
+
+komunikacja z API przez fetch/axios
+
+zarządzanie stanem (Context API lub Redux)
+
+routing (React Router)
+
+Backend (Node + Express)
+REST API
+
+logowanie, rejestracja, sesje lub JWT
+
+operacje CRUD na notatkach
+
+walidacja danych
+
+middleware autoryzacji
+
+Baza danych (PostgreSQL)
+tabele: users, notes
+
+relacja: user → notes (1:N)
+
+migracje (opcjonalnie: Prisma / Sequelize / Knex)
+
+🧩 2. Podział zadań — co dokładnie trzeba zrobić
+Poniżej masz idealny podział na etapy, który możesz traktować jak checklistę.
+
+ETAP 1 — Backend (Node + Express)
+1.1. Inicjalizacja projektu
+npm init -y
+
+instalacja:
+
+express
+
+cors
+
+bcrypt
+
+jsonwebtoken lub express-session
+
+pg (PostgreSQL driver)
+
+dotenv
+
+1.2. Struktura folderów
+Kod
+server/
+  src/
+    routes/
+    controllers/
+    middleware/
+    db/
+    models/
+  server.js
+1.3. Połączenie z PostgreSQL
+plik db.js
+
+test połączenia
+
+1.4. Modele danych
+User
+
+Note
+
+1.5. Endpoints (REST API)
+Auth
+POST /auth/register
+
+POST /auth/login
+
+GET /auth/me (sprawdzenie sesji/JWT)
+
+Notes
+GET /notes (wszystkie notatki użytkownika)
+
+POST /notes
+
+PUT /notes/:id
+
+DELETE /notes/:id
+
+1.6. Middleware
+authMiddleware (sprawdza JWT lub sesję)
+
+errorHandler
+
+ETAP 2 — Baza danych (PostgreSQL)
+2.1. Tabele
+users
+id (PK)
+
+email (unique)
+
+password_hash
+
+created_at
+
+notes
+id (PK)
+
+user_id (FK → users.id)
+
+title
+
+content
+
+created_at
+
+updated_at
+
+2.2. Relacje
+user ma wiele notes
+
+note należy do user
+
+2.3. Migracje (opcjonalnie)
+Prisma / Sequelize / Knex
+
+ETAP 3 — Frontend (React)
+3.1. Inicjalizacja projektu
+Vite (polecam):
+
+Kod
+npm create vite@latest client --template react
+3.2. Struktura folderów
+Kod
+client/
+  src/
+    components/
+    pages/
+    context/
+    hooks/
+    api/
+    styles/
+3.3. Routing (React Router)
+/login
+
+/register
+
+/notes
+
+/notes/:id/edit
+
+3.4. AuthContext
+przechowuje:
+
+user
+
+token / sesję
+
+login()
+
+logout()
+
+register()
+
+3.5. Komunikacja z API
+folder api/
+
+pliki:
+
+auth.js
+
+notes.js
+
+3.6. Komponenty
+LoginForm
+
+RegisterForm
+
+NotesList
+
+NoteEditor
+
+Navbar
+
+ETAP 4 — Integracja
+4.1. Połączenie React ↔ Node
+ustawienie CORS
+
+ustawienie proxy w Vite
+
+test logowania
+
+4.2. Obsługa błędów
+błędne hasło
+
+brak tokenu
+
+brak uprawnień
+
+4.3. Zabezpieczenia
+hashowanie haseł (bcrypt)
+
+JWT lub sesje
+
+walidacja danych
+
+ETAP 5 — Dodatki (opcjonalne, ale fajne)
+wyszukiwanie notatek
+
+tagi
+
+sortowanie
+
+autosave
+
+dark mode
+
+paginacja
+
+upload plików
+
+🧱 3. Szkic projektu — jak to wygląda w praktyce
+Backend
+Kod
+server/
+  src/
+    db/db.js
+    models/userModel.js
+    models/noteModel.js
+    controllers/authController.js
+    controllers/noteController.js
+    routes/authRoutes.js
+    routes/noteRoutes.js
+    middleware/authMiddleware.js
+  server.js
+Frontend
+Kod
+client/
+  src/
+    api/auth.js
+    api/notes.js
+    context/AuthContext.jsx
+    pages/Login.jsx
+    pages/Register.jsx
+    pages/Notes.jsx
+    pages/EditNote.jsx
+    components/NoteItem.jsx
+    components/NoteForm.jsx
+    App.jsx
+    main.jsx
