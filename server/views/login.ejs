@@ -1,42 +1,94 @@
 <%- include('partials/header') %>
 
 <div class="container mt-5">
-  <h1>Login</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
 
-  <div class="row">
-    <div class="col-sm-8">
-      <div class="card">
-        <div class="card-body">
+      <!-- Karta logowania -->
+      <div class="card mb-4">
+        <div class="card-body p-4">
 
-          <!-- Makes POST request to /login route -->
-          <form action="/login" method="POST">
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" name="username">
+          <h2 class="card-title text-center mb-4">
+            <i class="fas fa-lock mb-2"></i><br>
+            Logowanie
+          </h2>
+
+          <!-- Miejsce na błędy -->
+          <div id="error-message" class="alert alert-danger mb-3" style="display: none;" role="alert"></div>
+
+          <form id="login-form">
+            <div class="mb-3">
+              <label for="email" class="form-label">Adres e-mail</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="nazwa@przyklad.pl" required>
             </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" name="password">
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Hasło</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn btn-dark">Login</button>
+
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-dark">
+                <i class="fas fa-sign-in-alt"></i> Zaloguj się
+              </button>
+            </div>
           </form>
 
+          <hr class="my-4">
+
+          <!-- Nawigacja pomocnicza -->
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="/" class="btn btn-outline-dark btn-sm">
+              <i class="fas fa-arrow-left"></i> Strona główna
+            </a>
+            <a href="/register" class="btn btn-link text-dark text-decoration-none btn-sm">
+              Nie masz konta? Zarejestruj się <i class="fas fa-user-plus"></i>
+            </a>
+          </div>
+
         </div>
       </div>
+
     </div>
-
-    <!-- <div class="col-sm-4">
-      <div class="card">
-        <div class="card-body">
-          <a class="btn btn-block" href="/auth/google" role="button">
-            <i class="fab fa-google"></i>
-            Sign In with Google
-          </a>
-        </div>
-      </div>
-    </div> -->
-
   </div>
 </div>
+
+<script>
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const errorDiv = document.getElementById('error-message');
+    const emailInput = document.getElementById('email').value;
+    const passwordInput = document.getElementById('password').value;
+
+    errorDiv.style.display = 'none';
+    errorDiv.innerText = '';
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include', // Zapewnia poprawną obsługę ciasteczek sesyjnych
+        body: JSON.stringify({ username: emailInput, password: passwordInput })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        window.location.href = '/home';
+      } else {
+        errorDiv.innerText = result.message || 'Nieprawidłowy email lub hasło.';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Błąd logowania:', err);
+      errorDiv.innerText = 'Wystąpił problem z połączeniem z serwerem.';
+      errorDiv.style.display = 'block';
+    }
+  });
+</script>
 
 <%- include('partials/footer') %>

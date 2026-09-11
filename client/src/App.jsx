@@ -7,6 +7,7 @@ import CreateArea from "./components/CreateArea";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Notes from "./pages/Notes";
+import { UserContext, UserProvider } from "./context/userContext";
 
 function App() {
   // const [notes, setNotes] = useState([]);
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <UserProvider>
     <div id="root">
       <Header />
       {/* <Notes/> */}
@@ -61,6 +63,7 @@ function App() {
       </main>
       <Footer />
     </div>
+    </UserProvider>
     </BrowserRouter>
   );
 }

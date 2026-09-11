@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title><%= mode === 'create' ? 'Dodaj notatkę' : 'Edytuj notatkę' %></title>
+</head>
+<body>
+
+    <h1><%= mode === 'create' ? 'Dodaj notatkę' : 'Edytuj notatkę' %></h1>
+
+    <form 
+        action="<%= mode === 'create' 
+            ? '/api/notes' 
+            : '/api/notes/' + note.id %>" 
+        method="POST"
+    >
+        <% if (mode === 'edit') { %>
+            <input type="hidden" name="_method" value="PUT">
+        <% } %>
+
+        <label for="title">Tytuł:</label><br>
+        <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            value="<%= note ? note.title : '' %>" 
+            required
+        >
+        <br><br>
+
+        <label for="content">Treść:</label><br>
+        <textarea 
+            id="content" 
+            name="content" 
+            rows="6" 
+            required
+        ><%= note ? note.content : '' %></textarea>
+        <br><br>
+
+        <button type="submit">
+            <%= mode === 'create' ? 'Dodaj notatkę' : 'Zapisz zmiany' %>
+        </button>
+    </form>
+
+    <br>
+    <a href="/api/notes">Powrót</a>
+
+</body>
+</html>

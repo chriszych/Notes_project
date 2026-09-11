@@ -1,0 +1,164 @@
+/* Plik: public/css/user.css */
+
+/* Reset i podstawowe style */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #E8ECEF; /* Tło spójne z aplikacją */
+  color: #2b2d42;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Kontener główny */
+.container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Nagłówek główny */
+h2 {
+  color: #1a1a1a;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Karty (sekcje ustawień) */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 24px;
+}
+
+/* Tytuły w kartach */
+.card-body h4 {
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Informacje o użytkowniku */
+.card-body p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.card-body p:last-child {
+  margin-bottom: 0;
+}
+
+.card-body strong {
+  color: #2b2d42;
+}
+
+/* Formularze i pola do wprowadzania tekstu */
+.mb-3 {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #2b2d42;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4a5568;
+  box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.15);
+}
+
+/* Domyślny wygląd przycisków */
+button, .btn {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #2b2d42;
+  color: #ffffff;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover, .btn:hover {
+  background-color: #1a1a1a;
+}
+
+button:active, .btn:active {
+  transform: translateY(1px);
+}
+
+/* Przycisk usuwania konta */
+button[onclick="deleteAccount()"], .btn-danger {
+  background-color: #e63946;
+  color: #ffffff;
+  width: 100%;
+}
+
+button[onclick="deleteAccount()"]:hover, .btn-danger:hover {
+  background-color: #d62828;
+}
+
+/* Link "Powrót" */
+a {
+  display: inline-block;
+  color: #2b2d42;
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  border: 1px solid #ced4da;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+a:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* Komunikaty błędów/sukcesu */
+#message, .text-danger {
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}

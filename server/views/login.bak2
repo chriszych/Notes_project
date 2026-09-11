@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5">
+  <h1>Login</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Miejsce na błędy (ukryte domyślnie) -->
+          <div id="error-message" class="text-danger mb-3" style="display: none;"></div>
+
+          <!-- Formularz z dodanym ID -->
+          <form id="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <!-- Zmiana name="username" na id="email" name="email" -->
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <!-- Dodane id="password" -->
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-dark">Login</button>
+            <button type="button" class="btn-register btn-dark">Register</button>
+          </form>
+
+        </div>
+      </div>
+      <a class="btn btn-link mt-3 p-0" href="/">Home</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Skrypt obsługujący żądanie fetch -->
+<script>
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    // 1. Zatrzymujemy domyślne przeładowanie strony
+    e.preventDefault();
+
+    // 2. Pobieramy elementy
+    const errorDiv = document.getElementById('error-message');
+    const emailInput = document.getElementById('email').value;
+    const passwordInput = document.getElementById('password').value;
+
+    //console.log(emailInput, passwordInput);
+
+    // Reset błędu
+    errorDiv.style.display = 'none';
+    errorDiv.innerText = '';
+
+    try {
+      // 3. Wysyłamy dane do API
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        /* UWAGA: Jeśli używasz klasycznego Passport.js (LocalStrategy) 
+           i oczekuje on pola "username" zamiast "email", zamień to na:
+           body: JSON.stringify({ username: emailInput, password: passwordInput })
+        */
+        body: JSON.stringify({ username: emailInput, password: passwordInput })
+      });
+
+      const result = await response.json();
+
+      // 4. Sukces -> Przekierowanie
+      if (response.ok && result.success) {
+        window.location.href = '/home';
+      } 
+      // 5. Błąd -> Wyświetlamy go nad formularzem
+      else {
+        errorDiv.innerText = result.message || 'Nieprawidłowy email lub hasło.';
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Błąd logowania:', err);
+      errorDiv.innerText = 'Wystąpił problem z połączeniem z serwerem.';
+      errorDiv.style.display = 'block';
+    }
+  });
+
+
+  document.querySelector(".btn-register").addEventListener("click", (e) => {
+  e.preventDefault();
+  //document.getElementById("login-form").requestSubmit(); // Lub własna logika fetch
+  window.location.href = '/register';
+});
+
+</script>
+
+<%- include('partials/footer') %>

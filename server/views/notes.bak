@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Twoje notatki</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .note {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+
+    .note h3 {
+      margin: 0 0 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <br><br>
+  <a href="/user">Zarządzanie kontem</a>
+  <br><br>
+  <!-- <a href="/logout">Wyloguj</a> -->
+  <!-- <form action="/api/logout" method="POST" style="display:inline;">
+  <button type="submit">Wyloguj</button>
+</form> -->
+ <button id="logout-btn">Wyloguj się</button>
+  <br><br>
+
+  <!-- <h1>Notatki użytkownika <//%= users.email %></h1> -->
+  <!-- <h1>Notatki użytkownika <//%= notes.id_user %></h1> -->
+  
+  <!-- <h1>Notatki użytkownika: <span id="email"></span> o id=<= userId %> </h1> -->
+   <h1>Notatki użytkownika: <span id="email"></span></h1>
+  
+  <br><br>
+  <a href="/new">Nowa notatka</a>
+  <br><br>
+
+<!-- Miejsce na notatki lub komunikat o ładowaniu -->
+    <div id="notes-container">
+        <p>Ładowanie notatek...</p>
+    </div>
+
+  <!-- < if (notes.length===0) { %> -->
+    <!-- <p>Brak notatek.</p> -->
+    <!-- < } %> -->
+
+      <!-- < notes.forEach(note=> { %> -->
+        <!-- <div class="note">
+          <h3>
+            <= note.title %>
+          </h3>
+          <p>
+            <= note.text %>
+          </p>
+          <small>Utworzono: <span id="created"></span></small>
+          <small>Zmieniono: <span id="updated"></span></small>
+        </div> -->
+          <!-- <a href="/api/notes/<= note.id %>/edit/">Edytuj</a> -->
+          <!-- <a href="/api/notes/<= note.id %>/delete/">Usuń</a> -->
+
+          <!-- <form action="/api/notes/<= note.id %>" method="POST" style="display:inline;">
+          <input type="hidden" name="_method" value="DELETE">
+          <button onclick="return confirm('Usunąć notatkę?')">Usuń</button>
+          </form>
+
+          <br><br> -->
+        <!-- < }) %> -->
+
+
+
+</body>
+
+</html>
+
+<script>
+  async function loadUserData() {
+    const res = await fetch("/api/user", { credentials: "include" });
+    const result = await res.json();
+
+    document.getElementById("email").textContent =
+      result.data.email;
+      //console.log(result.data.email);
+  }
+  // async function loadUserNotes() {
+  //   const res = await fetch("/api/user", { credentials: "include" });
+  //   const data = await res.json();
+
+  //   document.getElementById("email").textContent =
+  //     data.email;
+  // }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+            const container = document.getElementById("notes-container");
+
+            try {
+                // 1. Odpytujemy nasz uniwersalny endpoint API
+                const response = await fetch("/api/notes", {
+                    headers: { "Accept": "application/json" }
+                });
+                const result = await response.json();
+
+                if (!result.success) {
+                    container.innerHTML = `<p style="color:red;">${result.message}</p>`;
+                    return;
+                }
+
+                const notes = result.data; // To jest nasza tablica formattedNotes
+
+                // 2. Jeśli pusta lista
+                if (notes.length === 0) {
+                    container.innerHTML = "<p>Nie masz jeszcze żadnych notatek.</p>";
+                    return;
+                }
+
+                // 3. Generujemy HTML dla każdej notatki
+                container.innerHTML = notes.map(note => `
+                    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                        <h3>${note.title}</h3>
+                        <p>${note.content}</p>
+                        <small>Utworzono: ${new Date(note.createdAt).toLocaleString()}</small>
+                        <br>
+                        <small>Edytowano: ${new Date(note.updatedAt).toLocaleString()}</small>
+                        <br><br>
+                        <a href="/${note.id}/edit">Edytuj</a>
+                        <button onclick="deleteNote(${note.id})">Usuń</button>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = "<p>Błąd podczas pobierania notatek.</p>";
+            }
+        });
+
+document.getElementById("logout-btn").addEventListener("click", async () => {
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: { "Accept": "application/json" }
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Przekierowanie po stronie klienta (JavaScript w przeglądarce)
+        window.location.href = "/";
+      } else {
+        alert("Błąd podczas wylogowywania");
+      }
+    } catch (err) {
+      console.error("Błąd sieci:", err);
+    }
+  });
+
+async function deleteNote(noteId) {
+  // 1. Prawidłowo pobieramy ID z URL (np. z /notes/edit/15)
+  //const urlParts = window.location.pathname.split('/');
+  // Jeśli URL to /notes/edit/15, ID znajduje się na samym końcu:
+  //const noteId = urlParts[urlParts.length - 2]; 
+
+  // 2. Pobieramy nowe wartości z pól formularza
+  //const title = document.getElementById('title').value;
+  //const content = document.getElementById('content').value;
+
+  //console.log(noteId);
+
+  try {
+    // 3. Używamy BACKTICKÓW `` i zmiennej noteId
+    const res = await fetch(`/api/notes/${noteId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      // 4. Przesyłamy zmienione dane w ciele żądania
+      body: JSON.stringify({ noteId })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      // 5. W podejściu API-first po sukcesie sami przekierowujemy na listę notatek
+     //window.location.href = `/home`;
+     window.location.reload();
+    } else {
+      alert(data.message || "Błąd podczas usuwania notatki");
+    }
+  } catch (err) {
+    console.error("Błąd sieci:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+}
+
+  loadUserData();
+  //loadUserNotes();
+</script>

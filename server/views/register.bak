@@ -1,0 +1,113 @@
+<%- include('partials/header') %>
+<div class="container mt-5">
+  <h1>Register</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+           <div id="message" class="text-danger mb-3" style="display: none;"></div>
+          <!-- Makes POST request to /register route -->
+          <!-- <form action="/api/register" method="POST"> -->
+          <form id="register-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="username" id="email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" id="password">
+            </div>
+            <button type="submit" class="btn-register btn-dark">Register</button>
+            <button type="submit" class="btn-login btn-dark">Login</button>
+          </form>
+
+        </div>
+      </div>
+             <a href="/">Home</a>
+    </div>
+ 
+    <!-- <div class="col-sm-4">
+      <div class="card social-block">
+        <div class="card-body">
+          <a class="btn btn-block" href="/auth/google" role="button">
+            <i class="fab fa-google"></i>
+            Sign Up with Google
+          </a>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+</div>
+
+
+
+<%- include('partials/header') %>
+
+<script>
+
+  const registerForm = document.getElementById("register-form");
+
+  registerForm.addEventListener('submit', async (e) => {
+    // 1. Zatrzymujemy domyślne przeładowanie strony
+    e.preventDefault();
+
+    // 2. Pobieramy elementy
+    const messageDiv = document.getElementById('message');
+    const emailInput = document.getElementById('email').value;
+    const passwordInput = document.getElementById('password').value;
+
+    //console.log(emailInput, passwordInput);
+
+    // Reset błędu
+    messageDiv.style.display = 'none';
+    messageDiv.innerText = '';
+
+    try {
+      // 3. Wysyłamy dane do API
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        /* UWAGA: Jeśli używasz klasycznego Passport.js (LocalStrategy) 
+           i oczekuje on pola "username" zamiast "email", zamień to na:
+           body: JSON.stringify({ username: emailInput, password: passwordInput })
+        */
+        body: JSON.stringify({ username: emailInput, password: passwordInput })
+      });
+
+      const result = await response.json();
+
+      // 4. Sukces -> Przekierowanie
+      if (response.ok && result.success) {
+        //window.location.reload();
+        registerForm.reset();
+        //messageDiv.innerText = 'Konto założone, możesz się zalogować.';
+        messageDiv.innerText = result.message;
+        messageDiv.className = "text-success mb-3";
+        messageDiv.style.display = 'block';
+        //window.location.href = '/home';
+      } 
+      // 5. Błąd -> Wyświetlamy go nad formularzem
+      else {
+        messageDiv.innerText = result.message || 'Nieprawidłowy email lub hasło.';
+        messageDiv.style.display = 'block';
+      }
+    } catch (err) {
+      //console.error('Błąd logowania:', err);
+      messageDiv.innerText = 'Wystąpił problem z połączeniem z serwerem.';
+      messageDiv.style.display = 'block';
+    }
+  });
+
+  document.querySelector(".btn-login").addEventListener("click", (e) => {
+  e.preventDefault();
+  //document.getElementById("login-form").requestSubmit(); // Lub własna logika fetch
+  window.location.href = '/login';
+});
+
+</script>

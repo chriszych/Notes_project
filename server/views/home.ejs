@@ -1,15 +1,39 @@
 <%- include('partials/header') %>
 
+<div class="container mt-5">
+  <div class="row justify-content-center text-center">
+    <div class="col-md-8 col-lg-6">
 
-<div class="jumbotron centered">
-  <div class="container">
-    <i class="fas fa-key fa-6x"></i>
-    <h1 class="display-3">Secrets</h1>
-    <p class="lead">Don't keep your secrets, share them anonymously!</p>
-    <hr>
-    <a class="btn btn-light btn-lg" href="/register" role="button">Register</a>
-    <a class="btn btn-dark btn-lg" href="/login" role="button">Login</a>
+      <!-- Główna karta powitalna -->
+      <div class="card shadow-sm p-4 mb-4">
+        <div class="card-body">
 
+          <!-- Ikona główna -->
+          <div class="mb-4 text-dark">
+            <i class="fas fa-file-alt fa-5x"></i>
+          </div>
+
+          <h1 class="display-5 fw-bold mb-3">Notes Web Portal</h1>
+          <p class="lead text-muted mb-4">
+            Trzymaj swoje notatki w bezpiecznym, cyfrowym notatniku – zawsze pod ręką.
+          </p>
+
+          <hr class="my-4">
+
+          <!-- Przyciski akcji -->
+          <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a class="btn btn-outline-dark btn-lg px-4" href="/register" role="button">
+              <i class="fas fa-user-plus"></i> Rejestracja
+            </a>
+            <a class="btn btn-dark btn-lg px-4" href="/login" role="button">
+              <i class="fas fa-sign-in-alt"></i> Logowanie
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Użytkownik</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<div class="container mt-5">
+
+  <h2 class="mb-4">
+    <i class="fas fa-user-cog fa-2x"></i> Ustawienia konta
+  </h2>
+
+  <!-- Dane użytkownika -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4>Dane użytkownika</h4>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <!-- <p><strong>Utworzono:</strong> <= new Date(user.created_at).toLocaleString('pl-PL') %></p>
+      <p><strong>Ostatnia aktualizacja:</strong> <= new Date(user.updated_at).toLocaleString('pl-PL') %></p> -->
+      <p><strong>Utworzono:</strong> <span id="created"></span></p>
+        <p><strong>Ostatnia aktualizacja:</strong> <span id="updated"></span></p>
+
+    </div>
+  </div>
+
+  <!-- Zmiana emaila -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4><i class="fas fa-envelope" class="btn btn-dark"></i> Zmień email</h4>
+
+      <!-- <form action="/api/user/email" method="POST"> -->
+      <form id="email-update">
+         <!-- <input type="hidden" name="_method" value="PUT"> -->
+        <div class="mb-3">
+          <label class="form-label">Nowy email</label>
+          <input type="email" name="newEmail" class="form-control" id="new-email" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Potwierdź hasło</label>
+          <input type="password" name="password" class="form-control" id="pass-confirm" required>
+        </div>
+
+        <!-- <button class="btn btn-primary">Zmień email</button> -->
+        <button onclick="updateEmail(event)">Zmień email</button>
+      </form>
+    </div>
+  </div>
+
+<!-- Zmiana hasła -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h4><i class="fas fa-key"></i> Zmień hasło</h4>
+    <form id="pass-update">
+      <div class="mb-3">
+        <label class="form-label">Stare hasło</label>
+        <input type="password" name="oldPassword" class="form-control" id="pass-old" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Nowe hasło</label>
+        <input type="password" name="newPassword" class="form-control" id="pass-new" required>
+      </div>
+
+      <button type="submit" onclick="updatePassword(event)" class="btn btn-dark">Zmień hasło</button>
+    </form>
+  </div>
+</div>
+
+  <!-- Usunięcie konta -->
+  <div class="card mb-4">
+    <div class="card-body">
+      
+
+<!-- <form action="/api/user?_method=DELETE" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć konto?')">
+    <button class="btn btn-danger">Usuń konto</button>
+</form> -->
+
+    <!-- <h4><i class="fas fa-user-times"></i> Usuń konto</h4> -->
+      <!-- <form action="/api/user" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć konto?')">
+        <input type="hidden" name="_method" value="DELETE">
+        <button class="btn btn-danger">Usuń konto</button> -->
+      <!-- </form> -->
+    <button class="btn btn-danger" onclick="deleteAccount()">Usuń konto</button>
+
+
+    </div>
+  </div>
+<!-- <a href="/home">Powrót</a> -->
+<a href="/home" class="btn btn-secondary">
+  <i class="fas fa-arrow-left"></i> Powrót
+</a>
+</div>
+
+<div id="message" class="text-danger mb-3" style="display: none;"></div>
+
+<script>
+  async function loadUserData() {
+    const res = await fetch("/api/user", { credentials: "include" });
+    const result = await res.json();
+
+    document.getElementById("created").textContent =
+      new Date(result.data.created_at).toLocaleString("pl-PL");
+
+    document.getElementById("updated").textContent =
+      new Date(result.data.updated_at).toLocaleString("pl-PL");
+
+      //console.log(result.data.created_at, result.data.updated_at)
+  }
+
+async function deleteAccount() {
+
+  try {
+
+  const res = await fetch("/api/user", {
+    method: "DELETE",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    window.location.href = "/";
+  } else {
+    alert(data.message);
+  }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+
+}
+
+async function updateEmail(e) {
+  if (e) e.preventDefault();
+
+  const newEmail = document.getElementById('new-email').value;
+  // Upewnij się, czy ID w HTML to na pewno 'pass-confimr', czy 'pass-confirm'
+  const password = document.getElementById('pass-confirm').value;
+
+  try {
+    const res = await fetch('/api/user/email', {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ password, newEmail })
+    });
+
+    // Odczytujemy JSON niezależnie od statusu HTTP, aby pobrać komunikat błędu z backendu
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      window.location.reload();
+      //loadUserData();
+    } else {
+      alert(data.message || "Błąd podczas aktualizacji adresu e-mail");
+    }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+}
+
+async function updatePassword(e) {
+  if (e) e.preventDefault();
+
+  const oldPassword = document.getElementById('pass-old').value;
+  // Upewnij się, czy ID w HTML to na pewno 'pass-confimr', czy 'pass-confirm'
+  const newPassword = document.getElementById('pass-new').value;
+
+  try {
+    const res = await fetch('/api/user/password', {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+
+    // Odczytujemy JSON niezależnie od statusu HTTP, aby pobrać komunikat błędu z backendu
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      window.location.reload();
+      //loadUserData();
+    } else {
+      alert(data.message || "Błąd podczas aktualizacji hasła");
+    }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+}
+
+  loadUserData();
+</script>
+
+
+

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title><%= mode === 'create' ? 'Dodaj notatkę' : 'Edytuj notatkę' %></title>
+</head>
+<body>
+    
+    <h2><%= mode === 'create' ? 'Dodaj notatkę' : 'Edytuj notatkę' %></h2>
+    <h1 id="form-title"><%= mode === 'edit' ? 'Ładowanie notatki...' : ''%></h1>
+
+    <!-- <form id="note-form" method="POST"> -->
+    <form id="note-form">
+        <!-- Ukryte pole dla method-override zostaje, jeśli używasz tradycyjnego POST z formularza -->
+        <!-- <input type="hidden" name="_method" value="PUT"> -->
+
+        <label for="title">Tytuł:</label><br>
+        <!-- Usunięto <%= %> - teraz pola są puste na starcie -->
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="content">Treść:</label><br>
+        <textarea id="content" name="content" rows="6" required></textarea><br><br>
+
+        <!-- <button type="submit">Zapisz zmiany</button> -->
+        <button onclick="updateNote()"><%= mode === 'edit' ? 'Zapisz zmiany' : 'Dodaj notatkę'%></button>
+        
+    </form>
+
+    <br>
+    <a href="/home">Powrót</a>
+
+    <!-- SEKCJA SCRIPT: Pobieranie danych JSON z Twojego czystego API -->
+    <script>
+        const urlPartsMain = window.location.pathname.split('/');
+        const mode = urlPartsMain[urlPartsMain.length - 1]; 
+        console.log(mode);
+
+    if (mode === 'edit') {
+        document.addEventListener("DOMContentLoaded", async () => {
+            // 1. Wyciągamy ID notatki z adresu URL (zakładając ścieżkę typu /notes/edit/42)
+            // Jeśli URL to /api/notes/42/edit, poniższa logika pobierze "42"
+            const urlParts = window.location.pathname.split('/');
+            const noteId = urlParts[urlParts.length - 2]; // Dostosuj indeks w zależności od Twojego routingu widoków
+
+            try {
+                // 2. Strzelamy do Twojego uniwersalnego API-first endpointu
+                const response = await fetch(`/api/notes/${noteId}/edit`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    const note = result.data;
+
+                    // 3. Wstrzykujemy pobrane dane JSON do pól formularza HTML
+                    document.getElementById('form-title').innerText = "Edytuj notatkę: " + note.title;
+                    document.getElementById('title').value = note.title;
+                    document.getElementById('content').value = note.content;
+                    
+                    // 4. Dynamicznie ustawiamy akcję formularza na właściwy endpoint
+                   // document.getElementById('note-form').action = `/api/notes/${note.id}`;
+                } else {
+                    alert("Nie udało się pobrać notatki: " + result.message);
+                }
+            } catch (err) {
+                console.error("Błąd pobierania danych:", err);
+                alert("Błąd połączenia z API");
+            }
+        });
+    }
+
+async function updateNote() {
+
+  // 2. Pobieramy nowe wartości z pól formularza
+  const title = document.getElementById('title').value;
+  const content = document.getElementById('content').value;
+
+ if (mode === 'edit') {
+
+
+  // 1. Prawidłowo pobieramy ID z URL (np. z /notes/edit/15)
+  const urlParts = window.location.pathname.split('/');
+  // Jeśli URL to /notes/edit/15, ID znajduje się na samym końcu:
+  const noteId = urlParts[urlParts.length - 2]; 
+
+
+
+  //console.log(noteId);
+
+  try {
+    // 3. Używamy BACKTICKÓW `` i zmiennej noteId
+    const res = await fetch(`/api/notes/${noteId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      // 4. Przesyłamy zmienione dane w ciele żądania
+      body: JSON.stringify({ title, content })
+    });
+
+if (!res.ok) {
+    throw new Error(`Serwer zwrócił błąd: ${res.status} ${res.statusText}`);
+  }
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      // 5. W podejściu API-first po sukcesie sami przekierowujemy na listę notatek
+      window.location.href = `/${noteId}/edit`;
+    } else {
+      alert(data.message || "Błąd podczas aktualizacji notatki");
+    }
+  } catch (err) {
+    console.error("Błąd sieci:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+}  else {
+
+ try {
+
+    const res = await fetch(`/api/notes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+
+      body: JSON.stringify({ title, content })
+    });
+
+if (!res.ok) {
+    throw new Error(`Serwer zwrócił błąd: ${res.status} ${res.statusText}`);
+  }
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+
+      window.location.href = `/home`;
+    } else {
+      alert(data.message || "Błąd podczas dodawania notatki");
+    }
+  } catch (err) {
+    console.error("Błąd sieci:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+
+}
+}
+
+    </script>
+</body>
+</html>

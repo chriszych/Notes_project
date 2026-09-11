@@ -1,0 +1,17 @@
+import { verifyToken } from "../config/jwt.js";
+
+export default function auth(req, res, next) {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.redirect("/login");
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.redirect("/login");
+  }
+}

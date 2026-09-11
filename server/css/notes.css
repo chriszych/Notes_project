@@ -1,0 +1,122 @@
+/* Plik: public/css/notes.css */
+
+/* Reset podstawowych marginesów */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #E8ECEF; /* Domyślne tło z Twojego pliku */
+  color: #2b2d42;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Nagłówek i adres e-mail */
+h1 {
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+#email {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Linki nawigacyjne (Zarządzanie kontem, Nowa notatka) */
+a {
+  display: inline-block;
+  color: #2b2d42;
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  border: 1px solid #ced4da;
+  transition: all 0.2s ease;
+  margin: 5px;
+}
+
+a:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* Przyciski (Wyloguj, Usuń) */
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 5px;
+}
+
+#logout-btn {
+  background-color: #e63946;
+  color: #ffffff;
+}
+
+#logout-btn:hover {
+  background-color: #d62828;
+}
+
+/* Kontener główny z notatkami */
+#notes-container {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Stylizacja kart notatek */
+.note, #notes-container > div {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6 !important; /* Nadpisuje ewentualny obrys inline z JS */
+  border-radius: 8px;
+  padding: 20px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.note h3, #notes-container h3 {
+  margin-bottom: 8px;
+  color: #1a1a1a;
+  font-size: 1.25rem;
+}
+
+.note p, #notes-container p {
+  line-height: 1.5;
+  margin-bottom: 12px;
+  color: #4a5568;
+}
+
+.note small, #notes-container small {
+  color: #6c757d;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+/* Przycisk usuwania w karcie notatki */
+#notes-container button {
+  background-color: #e63946;
+  color: #ffffff;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+}
+
+#notes-container button:hover {
+  background-color: #d62828;
+}
