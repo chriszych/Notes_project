@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Notes from "./pages/Notes";
 import { UserContext, UserProvider } from "./context/userContext";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   // const [notes, setNotes] = useState([]);
@@ -37,7 +38,13 @@ function App() {
       <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/notes" element={<Notes />} />
+      
+      <Route path="/notes" element={
+        <ProtectedRoute>
+        <Notes />
+        </ProtectedRoute>
+      } />
+      
 
 
   {/* catch-all */}
