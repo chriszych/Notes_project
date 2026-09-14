@@ -57,7 +57,7 @@ export async function createNote(req, res) {
 
   try {
     const result = await db.query(
-      "INSERT INTO notes (id_user, title, text) VALUES ($1, $2, $3) RETURNING id",
+      "INSERT INTO notes (id_user, title, text) VALUES ($1, $2, $3) RETURNING *",
       [userId, title, content]
     );
 
@@ -68,12 +68,20 @@ export async function createNote(req, res) {
       });
     }
 
+    const note = result.rows[0];
+
+    const formattedNote = {
+      id: note.id,
+      title: note.title,
+      content: note.text,
+      createdAt: note.created_at,
+      updatedAt: note.updated_at,
+    };
+
     return res.status(201).json({
       success: true,
       message: "Note added",
-      data: {
-        id: result.rows[0]?.id,
-      },
+      data: formattedNote
     });
   } catch (err) {
     console.error("Database error during adding new note:", err);

@@ -57,7 +57,10 @@ function Notes() {
       if (res.ok && result.success) {
         // Jeśli backend zwraca utworzony obiekt notatki, dodajemy go do stanu
         const savedNote = result.data || newNote;
-        setNotes((prevNotes) => [...prevNotes, savedNote]);
+        //test odpowiedzi api
+        //console.log(result.data, result.success, result)
+        //koniec testu odpowiedzi api
+        setNotes((prevNotes) => [savedNote, ...prevNotes]);
       } else {
         alert(result.message || "Błąd podczas dodawania notatki");
       }
