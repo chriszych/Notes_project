@@ -101,6 +101,11 @@ function Notes() {
     console.log("Edycja notatki o indeksie:", id);
   }
 
+   function saveNote(id) {
+    // Miejsce na obsługę edycji
+    console.log("Zapis notatki o indeksie:", id);
+  }
+
   if (loading) {
     return <div className="text-center mt-5">Ładowanie notatek...</div>;
   }
@@ -126,6 +131,7 @@ function Notes() {
               updatedAt={new Date(noteItem.updatedAt).toLocaleString('pl-PL')}
               onEdit={editNote}
               onDelete={() => deleteNote(index, noteItem.id)}
+              onSave={saveNote}
             />
           ))
         )}
