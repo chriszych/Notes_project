@@ -41,16 +41,16 @@ const [editedTitle, setEditedTitle] = useState(props.title);
       <textarea 
         value={editedContent}
         onChange={(e) => setEditedContent(e.target.value)}
-        rows="4"
         className="edit-content-textarea"
         ></textarea>
       </>
     )}
 
-
-      <button onClick={deleteClick}>
+<div className="note-actions">
+            <button onClick={deleteClick}>
         <DeleteIcon />
-      </button>
+         </button>
+
       {!isEdited ? (
             <button onClick={editClick}>
         <EditIcon />
@@ -59,14 +59,14 @@ const [editedTitle, setEditedTitle] = useState(props.title);
         <SaveIcon />
       </button>
       )}
-
+</div>
 <br />
 <br />
-  <span><i className="fas fa-history"></i> {props.updatedAt}</span>
+  <span className="dates"> Edited : {props.updatedAt}</span>
+  {/* <span className="dates"><i className="fas fa-history"></i>Updated: {props.updatedAt}</span>
       
-<br />
-      
-      <span><i className="far fa-clock"></i> {props.createdAt}</span>
+      <span className="dates" ><i className="far fa-clock"></i>Created: {props.createdAt}</span> */}
+      <span className="dates" >Added : {props.createdAt}</span>
       {/* <p>{props.createdAt}</p> */}
       {/* <p>{props.updatedAt}</p> */}
 

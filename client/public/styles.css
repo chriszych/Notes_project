@@ -50,7 +50,7 @@ footer {
 footer p {
   color: #ccc;
 }
-.note {
+/* .note {
   background: #fff;
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
@@ -68,7 +68,65 @@ footer p {
   margin-bottom: 10px;
   white-space: pre-wrap;
   word-wrap: break-word;
+} */
+
+/*test*/
+.note {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 240px;
+  margin: 16px;
+  float: left;
+  
+  /* Układ Flexbox pozwala rozciągać pola w pionie */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
+
+.note h1 {
+  font-size: 1.1em;
+  margin-bottom: 6px;
+}
+
+.note p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* --- STYLE EDYCJI --- */
+
+.edit-title-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  font-family: inherit;
+}
+
+.edit-content-textarea {
+  width: 100%;
+  min-height: 100px; /* Domyślna minimalna wysokość */
+  flex-grow: 1;      /* Wypełnia wolną przestrzeń */
+  box-sizing: border-box;
+  font-size: 1.1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  font-family: inherit;
+  resize: vertical;  /* Pozwala rozciągać tylko w dół */
+  margin-bottom: 10px;
+}
+/*end test*/
+
 
 .note button {
   position: relative;
@@ -238,6 +296,9 @@ main {
   flex-direction: column;
 }
 
+.dates {
+  font-size: smaller;
+}
 /* #root {
   background: rgba(0, 255, 0, 0.1);
 } */
