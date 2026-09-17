@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 function Note(props) {
 
@@ -21,7 +22,12 @@ const [editedTitle, setEditedTitle] = useState(props.title);
       setIsEdited(false);
       //console.log(editedTitle, editedContent);
     props.onSave({"title": editedTitle, "content": editedContent});
-    
+  }
+
+  function cancelClick(){
+    setIsEdited(false);
+    setEditedTitle(props.title);
+    setEditedContent(props.content);
   }
 
   return (
@@ -49,9 +55,15 @@ const [editedTitle, setEditedTitle] = useState(props.title);
     )}
 
 <div className="note-actions">
+      {!isEdited ? (
             <button onClick={deleteClick}>
         <DeleteIcon />
+         </button> ) : (
+
+        <button onClick={cancelClick}>
+        <CancelIcon />
          </button>
+         )}
 
       {!isEdited ? (
             <button onClick={editClick}>
