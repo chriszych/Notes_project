@@ -15,11 +15,13 @@ const [editedTitle, setEditedTitle] = useState(props.title);
   }
   function editClick() {
     setIsEdited(true);
-    props.onEdit(props.id);
+    //props.onEdit(props.id);
   }
     function saveClick() {
       setIsEdited(false);
-    props.onSave(props.id);
+      //console.log(editedTitle, editedContent);
+    props.onSave({"title": editedTitle, "content": editedContent});
+    
   }
 
   return (

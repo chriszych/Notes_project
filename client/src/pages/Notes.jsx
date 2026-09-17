@@ -96,15 +96,64 @@ function Notes() {
     }
   }
 
-  function editNote(id) {
+  //function editNote(id) {
     // Miejsce na obsługę edycji
-    console.log("Edycja notatki o indeksie:", id);
-  }
+  //  console.log("Edycja notatki o indeksie:", id);
+  //}
 
-   function saveNote(id) {
+   async function saveNote(noteId, updatedNote) {
     // Miejsce na obsługę edycji
-    console.log("Zapis notatki o indeksie:", id);
+    //    if (!window.confirm("Czy na pewno chcesz zmienić tą notatkę?")) return;
+    //console.log("Note:", updatedNote);
+  let data = null;
+
+    try {
+      // Jeśli notatka posiada ID z bazy danych, usuwamy ją na serwerze
+      if (noteId) {
+        const res = await fetch(`/api/notes/${noteId}`, {
+          method: "PUT",
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json" 
+            },
+          credentials: "include",
+          body: JSON.stringify(updatedNote)
+        });
+        data = await res.json();
+
+        if (!res.ok || !data.success) {
+          alert(data.message || "Nie udało się zmienić notatki na serwerze");
+          return;
+        }
+      }
+
+      // Aktualizujemy stan Reacta, usuwając notatkę z listy
+      //setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
+    const returnedNote = data.data;
+    //console.log(returnedNote);
+
+    //   setNotes((prevNotes) =>
+    //   prevNotes.map((note) =>
+    //     note.id === noteId ? { ...note, ...returnedNote} : note
+    //   )
+    // );
+
+          setNotes((prevNotes) => {
+        const restNotes = prevNotes.filter((note) => note.id !== noteId);
+        return[returnedNote, ...restNotes];
+          });
+
+   // console.log("Zapis notatki o indeksie:", noteId, updatedNote);
+    //router.put("/:id", auth, updateNote);
+  // try {
+
+
+
+  } catch (err) {
+    console.error("Błąd podczas aktualizacji notatki:", err);
   }
+   }
+  
 
   if (loading) {
     return <div className="text-center mt-5">Ładowanie notatek...</div>;
@@ -129,9 +178,10 @@ function Notes() {
               content={noteItem.content || noteItem.text}
               createdAt={new Date(noteItem.createdAt).toLocaleString('pl-PL')}
               updatedAt={new Date(noteItem.updatedAt).toLocaleString('pl-PL')}
-              onEdit={editNote}
+              //onEdit={editNote}
               onDelete={() => deleteNote(index, noteItem.id)}
-              onSave={saveNote}
+              //onSave={() => saveNote(index, noteItem.id, noteItem.title, noteItem.content)}
+              onSave={(updatedNote) => saveNote(noteItem.id, updatedNote)}
             />
           ))
         )}

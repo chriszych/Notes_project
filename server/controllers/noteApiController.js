@@ -188,7 +188,7 @@ export async function updateNote(req, res) {
 
   try {
     const result = await db.query(
-      "UPDATE notes SET title = $1, text = $2 WHERE id = $3 AND id_user = $4",
+      "UPDATE notes SET title = $1, text = $2 WHERE id = $3 AND id_user = $4 RETURNING *",
       [title, content, noteId, userId]
     );
 
@@ -199,9 +199,20 @@ export async function updateNote(req, res) {
       });
     }
 
+    const note = result.rows[0];
+
+    const formattedNote = {
+      id: note.id,
+      title: note.title,
+      content: note.text,
+      createdAt: note.created_at,
+      updatedAt: note.updated_at,
+    };
+
     return res.status(200).json({
       success: true,
       message: "Note updated",
+      data: formattedNote
     });
   } catch (err) {
     console.error("Database error during note update:", err);
