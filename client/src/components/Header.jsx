@@ -1,13 +1,29 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const { user, loadingUser, logout } = useContext(UserContext);
+  const [isSettings, setSettings] = useState(true);
+  const navigate = useNavigate();
+
+  function settings() {
+    navigate("/settings");
+    setSettings(false);
+  }
+
+    function goNotes() {
+    navigate("/notes");
+    setSettings(true);
+  }
 
   if (loadingUser) return null; // Lub prosty loader
 
@@ -23,9 +39,18 @@ function Header() {
           <>
           <PersonIcon />
             <span><strong>{user.email}</strong></span>
+            
             <button>
-            <SettingsIcon/>
+            {isSettings == true ? (
+            <SettingsIcon onClick={settings}/>
+            ) : (
+            <NoteAltIcon onClick={goNotes}/>
+            )}
+
             </button>
+            
+            
+            
             {/* <Link to="/settings">Ustawienia konta</Link> */}
             <button onClick={logout} className="logout-btn">
             <LogoutIcon />
@@ -33,7 +58,7 @@ function Header() {
             {/* <button onClick={logout} className="logout-btn">Wyloguj</button> */}
           </>
         ) : (
-          <Link to="/register">Register / Login</Link>
+           <Link to="/register"></Link>
         )}
       </div>
     </header>

@@ -6,6 +6,7 @@ import Note from "./components/Note";
 import CreateArea from "./components/CreateArea";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { UserContext, UserProvider } from "./context/userContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -38,7 +39,11 @@ function App() {
       <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      
+      <Route path="/settings" element={
+        <ProtectedRoute>
+        <Settings />
+        </ProtectedRoute>
+        } />
       <Route path="/notes" element={
         <ProtectedRoute>
         <Notes />
