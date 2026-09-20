@@ -12,17 +12,17 @@ import { useNavigate } from "react-router-dom";
 
 function Header() {
   const { user, loadingUser, logout } = useContext(UserContext);
-  const [isSettings, setSettings] = useState(true);
+  // const [isSettings, setSettings] = useState(true);
   const navigate = useNavigate();
 
   function settings() {
     navigate("/settings");
-    setSettings(false);
+    // setSettings(false);
   }
 
     function goNotes() {
     navigate("/notes");
-    setSettings(true);
+    // setSettings(true);
   }
 
   if (loadingUser) return null; // Lub prosty loader
@@ -41,10 +41,11 @@ function Header() {
             <span><strong>{user.email}</strong></span>
             
             <button>
-            {isSettings == true ? (
-            <SettingsIcon onClick={settings}/>
+            {/* {isSettings == true ? ( */}
+            {location.pathname === "/settings" ? (
+              <NoteAltIcon onClick={goNotes}/>
             ) : (
-            <NoteAltIcon onClick={goNotes}/>
+            <SettingsIcon onClick={settings}/>
             )}
 
             </button>

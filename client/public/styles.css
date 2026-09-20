@@ -318,3 +318,153 @@ main {
   cursor: pointer;
   outline: none;
 }
+
+/* ==========================================
+   STYLE DLA USTAWIEŃ KONTA (Settings)
+   ========================================== */
+
+.settings-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0 16px;
+  font-family: inherit;
+}
+
+.settings-title {
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+  color: #333;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-title i {
+  color: #f5ba13;
+}
+
+/* Karty sekcji ustawień */
+.settings-card {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.settings-card h4 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-card h4 i {
+  color: #f5ba13;
+}
+
+/* Pola formularzy */
+.settings-group {
+  margin-bottom: 16px;
+}
+
+.settings-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.settings-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.settings-group input:focus {
+  border-color: #f5ba13;
+}
+
+/* Przyciski */
+.btn-primary-custom {
+  background: #f5ba13;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background: #d99d0f;
+}
+
+.btn-danger-custom {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-danger-custom:hover {
+  background: #c0392b;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: color 0.2s ease;
+}
+
+/* Przycisk powrotu w sekcji Settings */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #fff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Zaokrąglony, kapsułkowy kształt */
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-back:hover {
+  background-color: #f5ba13;
+  color: #fff;
+  border-color: #f5ba13;
+  box-shadow: 0 2px 6px rgba(245, 186, 19, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-back:active {
+  transform: translateY(0);
+}
