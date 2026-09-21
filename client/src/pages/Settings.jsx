@@ -1,8 +1,13 @@
 import React from "react";
 import "./../../public/styles.css";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../context/userContext";
 
 function Settings() {
+
+  const { user, loadingUser } = useContext(UserContext);
+
   const navigate = useNavigate();
 
   function updateEmail(event) {
@@ -19,6 +24,9 @@ function Settings() {
     // Account deletion logic
   }
 
+  if (loadingUser) return null;
+  //console.log(user);
+
   return (
     <div className="settings-container">
       <h2 className="settings-title">
@@ -31,10 +39,10 @@ function Settings() {
           <i className="fas fa-info-circle"></i> User Information
         </h4>
         <p>
-          <strong>Created at:</strong> <span id="created">--</span>
+          <strong>added at: </strong><span id="created">{new Date(user.created_at).toLocaleString('pl-PL')}</span>
         </p>
         <p>
-          <strong>Last update:</strong> <span id="updated">--</span>
+          <strong>modified: </strong><span id="updated">{new Date(user.updated_at).toLocaleString('pl-PL')}</span>
         </p>
       </div>
 
@@ -46,12 +54,23 @@ function Settings() {
         <form id="email-update" onSubmit={updateEmail}>
           <div className="settings-group">
             <label>New Email</label>
-            <input type="email" name="newEmail" id="new-email" required />
+            <input 
+              type="email" 
+              name="newEmail" 
+              id="new-email" 
+              autoComplete="new-email"
+              required />
           </div>
 
           <div className="settings-group">
             <label>Confirm Password</label>
-            <input type="password" name="password" id="pass-confirm" required />
+            <input 
+              type="password" 
+              name="password" 
+              id="pass-confirm" 
+              autoComplete="password"
+              required 
+            />
           </div>
 
           <button type="submit" className="btn-primary-custom">
@@ -66,14 +85,36 @@ function Settings() {
           <i className="fas fa-key"></i> Change Password
         </h4>
         <form id="pass-update" onSubmit={updatePassword}>
+
+          {/* Ukryte pole na nazwę użytkownika/email wymagane przez przeglądarki */}
+  <input 
+    type="text" 
+    name="username" 
+    value={user.email} // Przekaż tutaj login/email zalogowanego użytkownika
+    autoComplete="username" 
+    style={{ display: "none" }} 
+    readOnly 
+  />
+
           <div className="settings-group">
             <label>Current Password</label>
-            <input type="password" name="oldPassword" id="pass-old" required />
+            <input 
+              type="password" 
+              name="old-password" 
+              id="pass-old" 
+              autoComplete="current-password"
+              required />
           </div>
 
           <div className="settings-group">
             <label>New Password</label>
-            <input type="password" name="newPassword" id="pass-new" required />
+            <input 
+              type="password" 
+              name="new-password" 
+              id="pass-new" 
+              required 
+              autoComplete="new-password"
+              />
           </div>
 
           <button type="submit" className="btn-primary-custom">
