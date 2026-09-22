@@ -6,7 +6,7 @@ import { UserContext } from "../context/userContext";
 
 function Settings() {
 
-  const { user, loadingUser } = useContext(UserContext);
+  const { user, loadingUser, logout } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -20,9 +20,34 @@ function Settings() {
     // Password update logic
   }
 
-  function deleteAccount() {
-    // Account deletion logic
+  async function deleteAccount() {
+
+if (!window.confirm(`Are you sure you want to delete ${user.email} account?`)) return;
+
+  try {
+
+  const res = await fetch("/api/user", {
+    method: "DELETE",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    // window.location.href = "/";
+    alert(`Your account: ${user.email} was successfully deleted.`);
+    logout();
+    navigate("/");
+  } else {
+    alert(data.message);
   }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
+
+}
+
 
   if (loadingUser) return null;
   //console.log(user);

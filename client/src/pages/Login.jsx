@@ -77,6 +77,7 @@ async function handleLoginClick (e) {
           name="email"
           required
           placeholder="e-mail"
+          autoComplete="username"
           value={formData.email}
           onChange={handleChange}
         />
@@ -86,6 +87,7 @@ async function handleLoginClick (e) {
           name="password" 
           required
           placeholder="password"
+          autoComplete="current-password"
           value={formData.password}
           onChange={handleChange}
         />
