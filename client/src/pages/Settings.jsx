@@ -1,23 +1,95 @@
 import React from "react";
 import "./../../public/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
 
 function Settings() {
 
   const { user, loadingUser, logout } = useContext(UserContext);
-
   const navigate = useNavigate();
 
-  function updateEmail(event) {
+  // const [newEmail, setNewEmail] = useState(null);
+  // const [newPassword, setNewPassword] = useState(null);
+  const [formData, setFormData] = useState({
+  newEmail: "",
+  newPassword: "",
+  oldPassword: ""
+});
+
+ 
+
+    const handleChange = (e) => {
+    //setErrorMessage("");
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  async function updateEmail(event) {
     event.preventDefault();
-    // Email update logic
+    
+      const newEmail = formData.newEmail;
+      const password = formData.newPassword;
+
+  try {
+    const res = await fetch('/api/user/email', {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ password, newEmail })
+    });
+
+    // Odczytujemy JSON niezależnie od statusu HTTP, aby pobrać komunikat błędu z backendu
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      window.location.reload();
+      //loadUserData();
+    } else {
+      alert(data.message || "Błąd podczas aktualizacji adresu e-mail");
+    }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
   }
 
-  function updatePassword(event) {
+ async function updatePassword(event) {
     event.preventDefault();
-    // Password update logic
+    
+     const oldPassword = formData.oldPassword;
+    const newPassword = formData.newPassword;
+
+  try {
+    const res = await fetch('/api/user/password', {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+
+    // Odczytujemy JSON niezależnie od statusu HTTP, aby pobrać komunikat błędu z backendu
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      window.location.reload();
+      //loadUserData();
+    } else {
+      alert(data.message || "Błąd podczas aktualizacji hasła");
+    }
+  } catch (err) {
+    console.error("Błąd sieci lub serwera:", err);
+    alert("Wystąpił problem z połączeniem z serwerem.");
+  }
   }
 
   async function deleteAccount() {
@@ -84,17 +156,22 @@ if (!window.confirm(`Are you sure you want to delete ${user.email} account?`)) r
               name="newEmail" 
               id="new-email" 
               autoComplete="new-email"
-              required />
+              value={formData.newEmail}
+              onChange={handleChange}
+              required 
+              />
           </div>
 
           <div className="settings-group">
             <label>Confirm Password</label>
             <input 
               type="password" 
-              name="password" 
+              name="newPassword" 
               id="pass-confirm" 
               autoComplete="password"
-              required 
+              value={formData.newPassword}
+              onChange={handleChange}
+              required
             />
           </div>
 
@@ -125,9 +202,11 @@ if (!window.confirm(`Are you sure you want to delete ${user.email} account?`)) r
             <label>Current Password</label>
             <input 
               type="password" 
-              name="old-password" 
+              name="oldPassword" 
               id="pass-old" 
               autoComplete="current-password"
+              value={formData.oldPassword}
+              onChange={handleChange}
               required />
           </div>
 
@@ -135,10 +214,12 @@ if (!window.confirm(`Are you sure you want to delete ${user.email} account?`)) r
             <label>New Password</label>
             <input 
               type="password" 
-              name="new-password" 
+              name="newPassword" 
               id="pass-new" 
               required 
               autoComplete="new-password"
+              value={formData.newPassword}
+              onChange={handleChange}
               />
           </div>
 
