@@ -1,0 +1,485 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: "Montserrat", sans-serif;
+  /*new*/
+  height: 100%;
+}
+body {
+  background: #eee;
+  background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+  /* padding: 0 16px; */
+  /*new*/
+  height: 100%;
+  /* display: flex;
+  flex-direction: column; */
+}
+
+/* h1 {
+  color: #fff;
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+} */
+
+header {
+  background-color: #f5ba13;
+  margin: auto -16px;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+  color: #fff;
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+}
+
+footer {
+  /* position: absolute;
+  bottom: 0; */
+  text-align: center;
+  width: 100%;
+  height: 2.5rem;
+  /*new*/
+  margin-top: auto;
+}
+
+footer p {
+  color: #ccc;
+}
+/* .note {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 240px;
+  margin: 16px;
+  float: left;
+}
+.note h1 {
+  font-size: 1.1em;
+  margin-bottom: 6px;
+}
+.note p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+} */
+
+/*test*/
+.note {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 240px;
+  margin: 16px;
+  float: left;
+  
+  /* Układ Flexbox pozwala rozciągać pola w pionie */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.note h1 {
+  font-size: 1.1em;
+  margin-bottom: 6px;
+}
+
+.note p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* --- STYLE EDYCJI --- */
+
+.edit-title-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  font-family: inherit;
+}
+
+.edit-content-textarea {
+  width: 100%;
+  min-height: 100px; /* Domyślna minimalna wysokość */
+  flex-grow: 1;      /* Wypełnia wolną przestrzeń */
+  box-sizing: border-box;
+  font-size: 1.1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  font-family: inherit;
+  resize: vertical;  /* Pozwala rozciągać tylko w dół */
+  margin-bottom: 10px;
+}
+/*end test*/
+
+
+.note button {
+  position: relative;
+  float: right;
+  margin-right: 10px;
+  color: #f5ba13;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+
+form.create-note {
+  position: relative;
+   /* position: absolute; */
+  width: 480px;
+  margin: 30px auto 20px auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+}
+form.create-note input,
+form.create-note textarea {
+  width: 100%;
+  border: none;
+  padding: 4px;
+  outline: none;
+  font-size: 1.2em;
+  font-family: inherit;
+  resize: none;
+}
+form.create-note button {
+  position: absolute;
+  right: 18px;
+  bottom: -18px;
+  background: #f5ba13;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Tło i centrowanie formularza */
+.login-wrapper {
+  width: 100%;
+  /* min-height: 50vh; */
+   /*new*/
+  flex: 1;
+  /*endNew*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+ 
+}
+
+/* Biała karta jak create-note */
+form.login {
+  width: 380px;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Tytuł: Login / Rejestracja */
+form.login h2 {
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+  font-size: 1.8rem;
+  text-align: center;
+  color: #f5ba13;
+  margin-bottom: 10px;
+}
+
+/* Pola formularza */
+form.login input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+form.login input:focus {
+  border-color: #f5ba13;
+}
+
+/* Przycisk */
+form.login button {
+  width: 45%;
+  align-self: center;
+  padding: 12px;
+  background: #f5ba13;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+form.login button:hover {
+  background: #d99d0f;
+}
+
+/* Link pod formularzem */
+.login-switch {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.login-switch a {
+  color: #f5ba13;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-switch a:hover {
+  text-decoration: underline;
+}
+
+/*
+.login-buttons {
+  display: flex;
+  justify-content: space-between; /* lub center / space-between 
+  gap: 10px; /* odstęp między przyciskami 
+  margin-top: 10px;
+}
+
+.login-buttons button {
+  width: 50%; /* każdy przycisk zajmuje połowę kontenera 
+}
+*/
+
+.notes-container::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+main {
+  flex: 1;
+  display: flex;
+   flex-direction: column;
+  align-items: center;   /* <--- to centruje CreateArea */
+  padding: 0 16px;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dates {
+  font-size: smaller;
+}
+/* #root {
+  background: rgba(0, 255, 0, 0.1);
+} */
+
+/* main {
+  background: rgba(255, 0, 0, 0.2);
+} */
+
+.header-user-nav button {
+  position: relative;
+  float: right;
+  margin-right: 1px;
+  color: #f5ba13;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ==========================================
+   STYLE DLA USTAWIEŃ KONTA (Settings)
+   ========================================== */
+
+.settings-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0 16px;
+  font-family: inherit;
+}
+
+.settings-title {
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+  color: #333;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-title i {
+  color: #f5ba13;
+}
+
+/* Karty sekcji ustawień */
+.settings-card {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.settings-card h4 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-card h4 i {
+  color: #f5ba13;
+}
+
+/* Pola formularzy */
+.settings-group {
+  margin-bottom: 16px;
+}
+
+.settings-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.settings-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.settings-group input:focus {
+  border-color: #f5ba13;
+}
+
+/* Przyciski */
+.btn-primary-custom {
+  background: #f5ba13;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary-custom:hover {
+  background: #d99d0f;
+}
+
+.btn-danger-custom {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-danger-custom:hover {
+  background: #c0392b;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: color 0.2s ease;
+}
+
+/* Przycisk powrotu w sekcji Settings */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #fff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Zaokrąglony, kapsułkowy kształt */
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-back:hover {
+  background-color: #f5ba13;
+  color: #fff;
+  border-color: #f5ba13;
+  box-shadow: 0 2px 6px rgba(245, 186, 19, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-back:active {
+  transform: translateY(0);
+}
+
+/* Styl ogólny dla urządzeń mobilnych */
+@media (max-width: 640px) {
+  .notes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px;
+  }
+
+  .note {
+    width: 90%;
+    margin-bottom: 0;
+  }
+}

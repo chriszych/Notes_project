@@ -11,81 +11,81 @@ const [isEdited, setIsEdited] = useState(false);
 const [editedTitle, setEditedTitle] = useState(props.title);
   const [editedContent, setEditedContent] = useState(props.content);
 
-  function deleteClick() {
+  function handleDeleteClick() {
     props.onDelete(props.id);
   }
-  function editClick() {
+  function handleEditClick() {
     setIsEdited(true);
     //props.onEdit(props.id);
   }
-    function saveClick() {
+    function handleSaveClick() {
       setIsEdited(false);
       //console.log(editedTitle, editedContent);
     props.onSave({"title": editedTitle, "content": editedContent});
   }
 
-  function cancelClick(){
+  function handleCancelClick(){
     setIsEdited(false);
     setEditedTitle(props.title);
     setEditedContent(props.content);
   }
 
   return (
-    <div className="note">
-    
-    {!isEdited ? (
-      <>
-      <h1>{props.title}</h1>
-      <p>{props.content}</p>
-      </>
-    ) : (
-      <>
-      <input 
+  <div className="note">
+  {isEdited ? (
+    <>
+      <input
         type="text"
         value={editedTitle}
         onChange={(e) => setEditedTitle(e.target.value)}
         className="edit-title-input"
-      ></input>
-      <textarea 
+      />
+      <textarea
         value={editedContent}
         onChange={(e) => setEditedContent(e.target.value)}
+        onInput={(e) => {
+          e.target.style.height = "auto";
+          e.target.style.height = e.target.scrollHeight + "px";
+        }}
         className="edit-content-textarea"
-        ></textarea>
+      />
+    </>
+  ) : (
+    <>
+      <h1>{props.title}</h1>
+      <p>{props.content}</p>
+    </>
+  )}
+
+  {/* Kontener utrzymujący ikonki w poziomie po lewej stronie */}
+  <div className="note-actions">
+    {isEdited ? (
+      <>
+        <button onClick={handleSaveClick} title="Save">
+          <SaveIcon />
+        </button>
+        <button onClick={handleCancelClick} title="Cancel">
+          <CancelIcon />
+        </button>
+      </>
+    ) : (
+      <>
+        <button onClick={handleEditClick} title="Edit">
+          <EditIcon />
+        </button>
+        <button onClick={handleDeleteClick} title="Delete">
+          <DeleteIcon />
+        </button>
       </>
     )}
+  </div>
 
-<div className="note-actions">
-      {!isEdited ? (
-            <button onClick={deleteClick}>
-        <DeleteIcon />
-         </button> ) : (
-
-        <button onClick={cancelClick}>
-        <CancelIcon />
-         </button>
-         )}
-
-      {!isEdited ? (
-            <button onClick={editClick}>
-        <EditIcon />
-      </button>) : (
-            <button onClick={saveClick}>
-        <SaveIcon />
-      </button>
-      )}
+  <div className="dates">
+    <span><i className="fas fa-history"></i> {props.updatedAt}</span>
+    <br />
+    <span><i className="far fa-clock"></i> {props.createdAt}</span>
+  </div>
 </div>
-<br />
-<br />
-  <span className="dates"> Edited : {props.updatedAt}</span>
-  {/* <span className="dates"><i className="fas fa-history"></i>Updated: {props.updatedAt}</span>
-      
-      <span className="dates" ><i className="far fa-clock"></i>Created: {props.createdAt}</span> */}
-      <span className="dates" >Added : {props.createdAt}</span>
-      {/* <p>{props.createdAt}</p> */}
-      {/* <p>{props.updatedAt}</p> */}
-
-
-    </div>
   );
 }
 
