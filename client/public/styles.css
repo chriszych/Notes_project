@@ -29,7 +29,7 @@ input, textarea, button {
   -moz-appearance: none;
   appearance: none;
   font-family: inherit;
-  font-size: 1rem; /* Minimum 16px eliminuje autozoom w Safari */
+  font-size: 1rem;
 }
 
 /* ==========================================
@@ -54,7 +54,6 @@ header h1 {
   white-space: nowrap;
 }
 
-/* Nawigacja oraz informacje o użytkowniku w nagłówku */
 .header-user-nav {
   display: flex;
   align-items: center;
@@ -148,16 +147,16 @@ form.create-note button {
 }
 
 /* ==========================================
-   5. SIATKA I KARTY NOTATEK (NOTES)
+   5. UKŁAD MASONRY / Niezależne wysokości notatek
    ========================================== */
 .notes-container, .notes-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
   width: 100%;
   max-width: 1200px;
   margin: 20px auto;
+  
+  /* Kolumny tworzą dynamiczny układ kafli bez wymuszania równej wysokości */
+  column-width: 260px;
+  column-gap: 16px;
 }
 
 .note {
@@ -166,9 +165,13 @@ form.create-note button {
   box-shadow: 0 2px 5px #ccc;
   padding: 12px;
   width: 100%;
-  max-width: 280px;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 16px; /* Odstęp w pionie między notatkami */
+  
+  /* Zapobiega przełamaniu pojedynczej notatki między kolumnami */
+  break-inside: avoid;
+  page-break-inside: avoid;
+  
+  display: inline-block; /* Zachowuje naturalną wysokość treści */
   box-sizing: border-box;
 }
 
@@ -184,14 +187,12 @@ form.create-note button {
   word-wrap: break-word;
 }
 
-/* Pojemnik na ikonki akcji w notatce (ułożone w poziomie do lewej) */
+/* Pojemnik na ikonki akcji w notatce (poziom, do lewej) */
 .note-actions {
   display: flex;
   flex-direction: row;
-  /* justify-content: flex-start; */
   justify-content: flex-end;
   gap: 8px;
-  margin-top: auto;
   padding-top: 10px;
 }
 
@@ -226,6 +227,7 @@ form.create-note button {
   font-size: 0.8rem;
   color: #888;
   margin-top: 8px;
+  display: block;
 }
 
 /* --- STYLE EDYCJI NOTATKI --- */
@@ -241,8 +243,7 @@ form.create-note button {
 
 .edit-content-textarea {
   width: 100%;
-  min-height: 100px;
-  flex-grow: 1;
+  min-height: 80px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -400,14 +401,22 @@ form.login button:hover {
 }
 
 .btn-primary-custom, .btn-danger-custom {
-  width: 100%;
+  width: auto;                  /* Zamiast 100% - przycisk dopasowuje się do treści */
+  min-width: 180px;             /* Opcjonalnie: estetyczna, spójna minimalna szerokość */
+  display: block;               /* Pozwala na użycie margin: auto */
+  margin: 12px auto 0 auto;     /* Wyśrodkowanie przycisku w poziomie */
   border: none;
   border-radius: 6px;
-  padding: 12px;
-  font-size: 1rem;
+  padding: 8px 20px;            /* Zmniejszony padding góra/dół dla mniejszego rozmiaru */
+  font-size: 0.95rem;           /* Lekko zmniejszona czcionka */
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  text-align: center;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary-custom:active, .btn-danger-custom:active {
+  transform: scale(0.98);
 }
 
 .btn-primary-custom {
@@ -472,7 +481,6 @@ footer p {
    9. MEDIA QUERIES (RESPONSYWNOŚĆ MOBILNA)
    ========================================== */
 @media (max-width: 600px) {
-  /* Przearanżowanie nagłówka na małych ekranach na 2 wiersze */
   header {
     flex-direction: column;
     align-items: flex-start;
@@ -503,12 +511,7 @@ footer p {
   }
 
   .notes-container, .notes-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .note {
-    max-width: 100%;
+    column-width: 100%; /* Jedna kolumna na pełną szerokość smartfona */
   }
 
   form.create-note {

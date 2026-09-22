@@ -36,7 +36,7 @@ function Settings() {
       {/* User Information */}
       <div className="settings-card">
         <h4>
-          <i className="fas fa-info-circle"></i> User Information
+          <i className="fas fa-info-circle"></i> Account info
         </h4>
         <p>
           <strong>added at: </strong><span id="created">{new Date(user.created_at).toLocaleString('pl-PL')}</span>
@@ -126,10 +126,10 @@ function Settings() {
       {/* Danger Zone / Delete Account */}
       <div className="settings-card">
         <h4>
-          <i className="fas fa-exclamation-triangle"></i> Danger Zone
+          <i className="fas fa-exclamation-triangle" style={{ color: "#e74c3c" }}></i> Delete Account
         </h4>
         <p style={{ marginBottom: "12px", color: "#666" }}>
-          Deleting your account is permanent. You will lose access to all your notes.
+          Deleting your account is permanent. You will lose all your notes.
         </p>
         <button className="btn-danger-custom" onClick={deleteAccount}>
           Delete Account

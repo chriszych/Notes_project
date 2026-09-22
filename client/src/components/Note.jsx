@@ -81,9 +81,9 @@ const [editedTitle, setEditedTitle] = useState(props.title);
   </div>
 
   <div className="dates">
-    <span><i className="fas fa-history"></i> {props.updatedAt}</span>
+    <span>Edited: {props.updatedAt}</span>
     <br />
-    <span><i className="far fa-clock"></i> {props.createdAt}</span>
+    <span>Added: {props.createdAt}</span>
   </div>
 </div>
   );
