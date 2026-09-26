@@ -3,26 +3,22 @@ import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
 
 function Notes() {
-  // Stan na listę notatek (początkowo pusta tablica)
   const [notes, setNotes] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Pobieranie danych z backendu przy pierwszym wyrenderowaniu komponentu
   useEffect(() => {
     async function fetchData() {
       try {
-        // 1. Pobieranie danych użytkownika
         const userRes = await fetch("/api/user", { credentials: "include" });
         const userData = await userRes.json();
         if (userData.success) {
           setUser(userData.data);
         }
 
-        // 2. Pobieranie notatek
         const notesRes = await fetch("/api/notes", {
           headers: { Accept: "application/json" },
-          credentials: "include"
+          credentials: "include",
         });
         const notesData = await notesRes.json();
 
@@ -39,27 +35,23 @@ function Notes() {
     fetchData();
   }, []);
 
-  // Dodawanie nowej notatki (lokalnie + wysyłka na backend)
   async function addNote(newNote) {
     try {
       const res = await fetch("/api/notes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json"
+          Accept: "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(newNote)
+        body: JSON.stringify(newNote),
       });
 
       const result = await res.json();
 
       if (res.ok && result.success) {
-        // Jeśli backend zwraca utworzony obiekt notatki, dodajemy go do stanu
         const savedNote = result.data || newNote;
-        //test odpowiedzi api
-        //console.log(result.data, result.success, result)
-        //koniec testu odpowiedzi api
+
         setNotes((prevNotes) => [savedNote, ...prevNotes]);
       } else {
         alert(result.message || "Błąd podczas dodawania notatki");
@@ -69,17 +61,15 @@ function Notes() {
     }
   }
 
-  // Usuwanie notatki (lokalnie + z serwera)
   async function deleteNote(id, noteId) {
     if (!window.confirm("Czy na pewno chcesz usunąć tę notatkę?")) return;
 
     try {
-      // Jeśli notatka posiada ID z bazy danych, usuwamy ją na serwerze
       if (noteId) {
         const res = await fetch(`/api/notes/${noteId}`, {
           method: "DELETE",
           headers: { Accept: "application/json" },
-          credentials: "include"
+          credentials: "include",
         });
         const data = await res.json();
 
@@ -89,35 +79,25 @@ function Notes() {
         }
       }
 
-      // Aktualizujemy stan Reacta, usuwając notatkę z listy
       setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
     } catch (err) {
       console.error("Błąd podczas usuwania:", err);
     }
   }
 
-  //function editNote(id) {
-    // Miejsce na obsługę edycji
-  //  console.log("Edycja notatki o indeksie:", id);
-  //}
-
-   async function saveNote(noteId, updatedNote) {
-    // Miejsce na obsługę edycji
-    //    if (!window.confirm("Czy na pewno chcesz zmienić tą notatkę?")) return;
-    //console.log("Note:", updatedNote);
-  let data = null;
+  async function saveNote(noteId, updatedNote) {
+    let data = null;
 
     try {
-      // Jeśli notatka posiada ID z bazy danych, usuwamy ją na serwerze
       if (noteId) {
         const res = await fetch(`/api/notes/${noteId}`, {
           method: "PUT",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json" 
-            },
+            Accept: "application/json",
+          },
           credentials: "include",
-          body: JSON.stringify(updatedNote)
+          body: JSON.stringify(updatedNote),
         });
         data = await res.json();
 
@@ -127,33 +107,16 @@ function Notes() {
         }
       }
 
-      // Aktualizujemy stan Reacta, usuwając notatkę z listy
-      //setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
-    const returnedNote = data.data;
-    //console.log(returnedNote);
+      const returnedNote = data.data;
 
-    //   setNotes((prevNotes) =>
-    //   prevNotes.map((note) =>
-    //     note.id === noteId ? { ...note, ...returnedNote} : note
-    //   )
-    // );
-
-          setNotes((prevNotes) => {
+      setNotes((prevNotes) => {
         const restNotes = prevNotes.filter((note) => note.id !== noteId);
-        return[returnedNote, ...restNotes];
-          });
-
-   // console.log("Zapis notatki o indeksie:", noteId, updatedNote);
-    //router.put("/:id", auth, updateNote);
-  // try {
-
-
-
-  } catch (err) {
-    console.error("Błąd podczas aktualizacji notatki:", err);
+        return [returnedNote, ...restNotes];
+      });
+    } catch (err) {
+      console.error("Błąd podczas aktualizacji notatki:", err);
+    }
   }
-   }
-  
 
   if (loading) {
     return <div className="text-center mt-5">Ładowanie notatek...</div>;
@@ -161,8 +124,6 @@ function Notes() {
 
   return (
     <div>
-      {/* {user && <div className="user-info">Witaj: {user.email} !</div>} */}
-      
       <CreateArea onAdd={addNote} />
 
       <div className="notes-container">
@@ -173,14 +134,12 @@ function Notes() {
             <Note
               key={noteItem.id || index}
               id={index}
-              dbId={noteItem.id} // przekazujemy ID z bazy danych do usuwania/edycji
+              dbId={noteItem.id}
               title={noteItem.title}
               content={noteItem.content || noteItem.text}
-              createdAt={new Date(noteItem.createdAt).toLocaleString('pl-PL')}
-              updatedAt={new Date(noteItem.updatedAt).toLocaleString('pl-PL')}
-              //onEdit={editNote}
+              createdAt={new Date(noteItem.createdAt).toLocaleString("pl-PL")}
+              updatedAt={new Date(noteItem.updatedAt).toLocaleString("pl-PL")}
               onDelete={() => deleteNote(index, noteItem.id)}
-              //onSave={() => saveNote(index, noteItem.id, noteItem.title, noteItem.content)}
               onSave={(updatedNote) => saveNote(noteItem.id, updatedNote)}
             />
           ))
