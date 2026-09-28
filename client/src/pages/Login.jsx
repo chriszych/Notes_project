@@ -41,7 +41,6 @@ function Login() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-
         await fetchUser();
         navigate("/notes");
       } else {
@@ -55,7 +54,6 @@ function Login() {
   }
 
   function handleRegisterClick() {
-    // window.location.href = '/register';
     navigate("/register");
   }
 

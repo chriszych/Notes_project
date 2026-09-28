@@ -8,7 +8,6 @@ export function UserProvider({ children }) {
   const [loadingUser, setLoadingUser] = useState(true);
   const navigate = useNavigate();
 
-  // Funkcja dostępna teraz globalnie
   const fetchUser = async () => {
     try {
       const res = await fetch("/api/user", { credentials: "include" });
@@ -44,7 +43,9 @@ export function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, loadingUser, logout, fetchUser }}>
+    <UserContext.Provider
+      value={{ user, setUser, loadingUser, logout, fetchUser }}
+    >
       {children}
     </UserContext.Provider>
   );

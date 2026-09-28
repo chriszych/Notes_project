@@ -8,7 +8,7 @@ function ProtectedRoute({ children }) {
   if (loadingUser) {
     return (
       <div>
-        <p>Sprawdzanie autoryzacji...</p>
+        <p>Authorisation checking...</p>
       </div>
     );
   }
