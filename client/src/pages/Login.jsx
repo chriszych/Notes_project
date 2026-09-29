@@ -44,11 +44,11 @@ function Login() {
         await fetchUser();
         navigate("/notes");
       } else {
-        console.log("Nieprawidłowy email lub hasło");
+        console.log("Email or password is not valid");
         setErrorMessage(result.message);
       }
     } catch (err) {
-      console.error("Błąd logowania:", err);
+      console.error("Login error:", err);
       setErrorMessage(err);
     }
   }

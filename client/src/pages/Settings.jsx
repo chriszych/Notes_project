@@ -44,11 +44,11 @@ function Settings() {
       if (res.ok && data.success) {
         window.location.reload();
       } else {
-        alert(data.message || "Błąd podczas aktualizacji adresu e-mail");
+        alert(data.message || "Error during e-mail update process");
       }
     } catch (err) {
-      console.error("Błąd sieci lub serwera:", err);
-      alert("Wystąpił problem z połączeniem z serwerem.");
+      console.error("Network or server error:", err);
+      alert("Problem with server connection.");
     }
   }
 
@@ -74,11 +74,11 @@ function Settings() {
       if (res.ok && data.success) {
         window.location.reload();
       } else {
-        alert(data.message || "Błąd podczas aktualizacji hasła");
+        alert(data.message || "Error during password update process");
       }
     } catch (err) {
-      console.error("Błąd sieci lub serwera:", err);
-      alert("Wystąpił problem z połączeniem z serwerem.");
+      console.error("Network or server error:", err);
+      alert("Problem with server connection.");
     }
   }
 
@@ -104,8 +104,8 @@ function Settings() {
         alert(data.message);
       }
     } catch (err) {
-      console.error("Błąd sieci lub serwera:", err);
-      alert("Wystąpił problem z połączeniem z serwerem.");
+      console.error("Network or server error:", err);
+      alert("Problem with server connection.");
     }
   }
 

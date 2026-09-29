@@ -49,16 +49,16 @@ function Register() {
 
       if (response.ok && result.success) {
         setFormData({ email: "", password: "" });
-        setSuccessMessage(result.message || "Użytkownik dodany, zaloguj się!");
+        setSuccessMessage(result.message || "User added, try login");
       } else {
         setFormData({ email: "", password: "" });
-        setErrorMessage(result.message || "Wystąpił błąd podczas rejestracji.");
+        setErrorMessage(result.message || "Error during user registration.");
       }
     } catch (err) {
       setErrorMessage(
         result?.message ||
           err.message ||
-          "Wystąpił problem z połączeniem z serwerem."
+          "Server connection error."
       );
     }
   }

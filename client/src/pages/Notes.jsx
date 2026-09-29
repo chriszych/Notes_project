@@ -26,7 +26,7 @@ function Notes() {
           setNotes(notesData.data);
         }
       } catch (err) {
-        console.error("Błąd podczas pobierania danych:", err);
+        console.error("Fetching data error:", err);
       } finally {
         setLoading(false);
       }
@@ -54,15 +54,15 @@ function Notes() {
 
         setNotes((prevNotes) => [savedNote, ...prevNotes]);
       } else {
-        alert(result.message || "Błąd podczas dodawania notatki");
+        alert(result.message || "Error during adding new note");
       }
     } catch (err) {
-      console.error("Błąd sieci podczas dodawania notatki:", err);
+      console.error("Error during adding new note:", err);
     }
   }
 
   async function deleteNote(id, noteId) {
-    if (!window.confirm("Czy na pewno chcesz usunąć tę notatkę?")) return;
+    if (!window.confirm("Are you sure to delete the note ?")) return;
 
     try {
       if (noteId) {
@@ -74,14 +74,14 @@ function Notes() {
         const data = await res.json();
 
         if (!res.ok || !data.success) {
-          alert(data.message || "Nie udało się usunąć notatki z serwera");
+          alert(data.message || "Error during deleting note from server");
           return;
         }
       }
 
       setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
     } catch (err) {
-      console.error("Błąd podczas usuwania:", err);
+      console.error("Error during deleting the note:", err);
     }
   }
 
@@ -102,7 +102,7 @@ function Notes() {
         data = await res.json();
 
         if (!res.ok || !data.success) {
-          alert(data.message || "Nie udało się zmienić notatki na serwerze");
+          alert(data.message || "Error during modyfing note on server");
           return;
         }
       }
@@ -114,12 +114,12 @@ function Notes() {
         return [returnedNote, ...restNotes];
       });
     } catch (err) {
-      console.error("Błąd podczas aktualizacji notatki:", err);
+      console.error("Error during modifying the note:", err);
     }
   }
 
   if (loading) {
-    return <div className="text-center mt-5">Ładowanie notatek...</div>;
+    return <div className="text-center mt-5">Loading notes...</div>;
   }
 
   return (

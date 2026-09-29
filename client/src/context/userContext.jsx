@@ -35,7 +35,7 @@ export function UserProvider({ children }) {
     try {
       await fetch("/api/logout", { method: "POST", credentials: "include" });
     } catch (err) {
-      console.error("Błąd wylogowania na serwerze:", err);
+      console.error("User logout on server error:", err);
     } finally {
       setUser(null);
       navigate("/");
