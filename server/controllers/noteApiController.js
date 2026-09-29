@@ -1,13 +1,5 @@
 import db from "../config/db.js";
 
-/*
-listNotes
-createNote
-getNoteById
-updateNote
-deleteNote
-*/
-
 export async function listNotes(req, res) {
   const userId = req.user.id;
 
@@ -81,7 +73,7 @@ export async function createNote(req, res) {
     return res.status(201).json({
       success: true,
       message: "Note added",
-      data: formattedNote
+      data: formattedNote,
     });
   } catch (err) {
     console.error("Database error during adding new note:", err);
@@ -91,13 +83,11 @@ export async function createNote(req, res) {
       message: "Problem with adding note!",
     });
   }
-
-  // res.redirect("/api/notes");
 }
 
 export async function getNoteById(req, res) {
   const userId = req.user.id;
-  const noteId = Number(req.params.id); // Konwersja na Number i walidacja
+  const noteId = Number(req.params.id);
 
   if (isNaN(noteId)) {
     return res.status(400).json({
@@ -112,7 +102,6 @@ export async function getNoteById(req, res) {
       [noteId, userId]
     );
 
-    // Jeśli notatki nie ma lub nie należy do użytkownika
     if (result.rowCount === 0) {
       return res.status(404).json({
         success: false,
@@ -122,13 +111,12 @@ export async function getNoteById(req, res) {
 
     const note = result.rows[0];
 
-    // Zwracamy czysty JSON – React sam zdecyduje, jak go wyświetlić
     return res.status(200).json({
       success: true,
       data: {
         id: note.id,
         title: note.title,
-        content: note.text, // Mapujemy 'text' z bazy na uniwersalne 'content' dla frontendu
+        content: note.text,
       },
     });
   } catch (err) {
@@ -139,33 +127,6 @@ export async function getNoteById(req, res) {
     });
   }
 }
-
-// export async function editNoteForm(req, res) {
-//   const userId = req.user.id;
-//   const noteId = req.params.id;
-
-//   const result = await db.query(
-//     "SELECT * FROM notes WHERE id = $1 AND id_user = $2",
-//     [noteId, userId]
-//   );
-
-//   if (!result.rowCount) {
-//     return res.status(404).json({
-//         success: false,
-//         message: "Note not found!" });
-//   }
-
-//   const note = result.rows[0];
-
-//   res.render("noteForm", {
-//     mode: "edit",
-//     note: {
-//       id: note.id,
-//       title: note.title,
-//       content: note.text,
-//     },
-//   });
-// }
 
 export async function updateNote(req, res) {
   const userId = req.user.id;
@@ -212,7 +173,7 @@ export async function updateNote(req, res) {
     return res.status(200).json({
       success: true,
       message: "Note updated",
-      data: formattedNote
+      data: formattedNote,
     });
   } catch (err) {
     console.error("Database error during note update:", err);
@@ -222,8 +183,6 @@ export async function updateNote(req, res) {
       message: "Problem with updating note!",
     });
   }
-  //ejs only
-  //res.redirect("/api/notes");
 }
 
 export async function deleteNote(req, res) {
@@ -261,6 +220,4 @@ export async function deleteNote(req, res) {
       message: "Problem with deleting note!",
     });
   }
-  // ejs only
-  //res.redirect("/api/notes");
 }

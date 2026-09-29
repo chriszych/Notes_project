@@ -1,13 +1,11 @@
-/* ==========================================
-   1. RESET I USTAWIENIA OGÓLNE
-   ========================================== */
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -23,8 +21,9 @@ body {
   flex-direction: column;
 }
 
-/* Zapobieganie automatycznemu powiększaniu widoku na urządzeniach iOS */
-input, textarea, button {
+input,
+textarea,
+button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -32,9 +31,6 @@ input, textarea, button {
   font-size: 1rem;
 }
 
-/* ==========================================
-   2. NAGŁÓWEK (HEADER)
-   ========================================== */
 header {
   background-color: #f5ba13;
   padding: 12px 24px;
@@ -93,9 +89,6 @@ header h1 {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ==========================================
-   3. GŁÓWNY KONTENER (MAIN)
-   ========================================== */
 main {
   flex: 1;
   display: flex;
@@ -105,9 +98,6 @@ main {
   width: 100%;
 }
 
-/* ==========================================
-   4. FORMULARZ TWORZENIA NOTATKI (CREATE AREA)
-   ========================================== */
 form.create-note {
   position: relative;
   width: 100%;
@@ -146,15 +136,11 @@ form.create-note button {
   justify-content: center;
 }
 
-/* ==========================================
-   5. UKŁAD MASONRY / Niezależne wysokości notatek
-   ========================================== */
-.notes-container, .notes-grid {
+.notes-container,
+.notes-grid {
   width: 100%;
   max-width: 1200px;
   margin: 20px auto;
-  
-  /* Kolumny tworzą dynamiczny układ kafli bez wymuszania równej wysokości */
   column-width: 260px;
   column-gap: 16px;
 }
@@ -165,13 +151,12 @@ form.create-note button {
   box-shadow: 0 2px 5px #ccc;
   padding: 12px;
   width: 100%;
-  margin-bottom: 16px; /* Odstęp w pionie między notatkami */
-  
-  /* Zapobiega przełamaniu pojedynczej notatki między kolumnami */
+  margin-bottom: 16px;
+
   break-inside: avoid;
   page-break-inside: avoid;
-  
-  display: inline-block; /* Zachowuje naturalną wysokość treści */
+
+  display: inline-block;
   box-sizing: border-box;
 }
 
@@ -187,7 +172,6 @@ form.create-note button {
   word-wrap: break-word;
 }
 
-/* Pojemnik na ikonki akcji w notatce (poziom, do lewej) */
 .note-actions {
   display: flex;
   flex-direction: row;
@@ -196,8 +180,7 @@ form.create-note button {
   padding-top: 10px;
 }
 
-/* Przycisk w notatce (szare okrągłe tło, żółta ikona) */
-.note button, 
+.note button,
 .note-actions button {
   background-color: #f1f5f9;
   color: #f5ba13;
@@ -213,12 +196,12 @@ form.create-note button {
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.note button:hover, 
+.note button:hover,
 .note-actions button:hover {
   background-color: #e2e8f0;
 }
 
-.note button:active, 
+.note button:active,
 .note-actions button:active {
   transform: scale(0.95);
 }
@@ -230,7 +213,6 @@ form.create-note button {
   display: block;
 }
 
-/* --- STYLE EDYCJI NOTATKI --- */
 .edit-title-input {
   width: 100%;
   box-sizing: border-box;
@@ -252,9 +234,6 @@ form.create-note button {
   margin-bottom: 10px;
 }
 
-/* ==========================================
-   6. LOGOWANIE I REJESTRACJA (LOGIN)
-   ========================================== */
 .login-wrapper {
   width: 100%;
   flex: 1;
@@ -330,9 +309,6 @@ form.login button:hover {
   text-decoration: underline;
 }
 
-/* ==========================================
-   7. USTAWIENIA KONTA (SETTINGS)
-   ========================================== */
 .settings-container {
   width: 100%;
   max-width: 600px;
@@ -400,22 +376,24 @@ form.login button:hover {
   border-color: #f5ba13;
 }
 
-.btn-primary-custom, .btn-danger-custom {
-  width: auto;                  /* Zamiast 100% - przycisk dopasowuje się do treści */
-  min-width: 180px;             /* Opcjonalnie: estetyczna, spójna minimalna szerokość */
-  display: block;               /* Pozwala na użycie margin: auto */
-  margin: 12px auto 0 auto;     /* Wyśrodkowanie przycisku w poziomie */
+.btn-primary-custom,
+.btn-danger-custom {
+  width: auto;
+  min-width: 180px;
+  display: block;
+  margin: 12px auto 0 auto;
   border: none;
   border-radius: 6px;
-  padding: 8px 20px;            /* Zmniejszony padding góra/dół dla mniejszego rozmiaru */
-  font-size: 0.95rem;           /* Lekko zmniejszona czcionka */
+  padding: 8px 20px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
   transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.btn-primary-custom:active, .btn-danger-custom:active {
+.btn-primary-custom:active,
+.btn-danger-custom:active {
   transform: scale(0.98);
 }
 
@@ -462,9 +440,6 @@ form.login button:hover {
   box-shadow: 0 2px 6px rgba(245, 186, 19, 0.4);
 }
 
-/* ==========================================
-   8. STOPKA (FOOTER)
-   ========================================== */
 footer {
   text-align: center;
   width: 100%;
@@ -477,9 +452,6 @@ footer p {
   font-size: 0.85rem;
 }
 
-/* ==========================================
-   9. MEDIA QUERIES (RESPONSYWNOŚĆ MOBILNA)
-   ========================================== */
 @media (max-width: 600px) {
   header {
     flex-direction: column;
@@ -510,8 +482,9 @@ footer p {
     padding: 0 12px;
   }
 
-  .notes-container, .notes-grid {
-    column-width: 100%; /* Jedna kolumna na pełną szerokość smartfona */
+  .notes-container,
+  .notes-grid {
+    column-width: 100%;
   }
 
   form.create-note {

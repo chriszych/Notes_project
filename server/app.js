@@ -14,7 +14,6 @@ app.use(express.json());
 
 app.use("/api/notes", notesApiRoutes);
 app.use("/", notesRoutes);
-//app.use("/api/user", userRoutes);
 app.use("/", userRoutes);
 app.use("/api", userApiRoutes);
 

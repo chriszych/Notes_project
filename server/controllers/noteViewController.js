@@ -3,19 +3,14 @@ export async function newNoteForm(req, res) {
 }
 
 export async function editNoteForm(req, res) {
-   res.render("noteForm", {
-     mode: "edit",
-     note: null
-//     note: {
-//       id: note.id,
-//       title: note.title,
-//       content: note.text,
-//     },
-   });
- }
+  res.render("noteForm", {
+    mode: "edit",
+    note: null,
+  });
+}
 
- export async function listNotes(req, res) {
+export async function listNotes(req, res) {
   res.render("notes", {
-    user: req.user
+    user: req.user,
   });
 }

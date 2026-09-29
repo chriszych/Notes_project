@@ -5,13 +5,8 @@ import bcrypt from "bcrypt";
 
 import cookieParser from "cookie-parser";
 
-
-
 import db from "../server/config/db.js";
 import auth from "../server/middleware/auth.js";
-import methodOverride from "./middleware/methodOverride.js";
-
-
 
 const app = express();
 
@@ -19,15 +14,12 @@ app.set("view engine", "ejs");
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-//app.use(methodOverride("_method"));
 
 app.use(methodOverride());
 
 const port = 3000;
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
-
-
 
 app.get("/", (req, res) => {
   res.render("home.ejs");
@@ -53,7 +45,6 @@ app.post("/api/register", async (req, res) => {
     if (checkResult.rows.length > 0) {
       res.send("Email already exists. Try logging in.");
     } else {
-      //Password hashing
       bcrypt.hash(password, saltRounds, async (err, hash) => {
         if (err) {
           console.log("Error hashing password:", err);
@@ -83,23 +74,20 @@ app.post("/api/login", async (req, res) => {
       const user = result.rows[0];
       const storedHashedPassword = user.password;
 
-      //comparing hashed password
       bcrypt.compare(loginPassword, storedHashedPassword, (err, result) => {
         if (err) {
           console.log("Error comparing the passwords:", err);
         } else {
           if (result) {
-            // 🔥 TU TWORZYSZ JWT Z ID UŻYTKOWNIKA
             const token = jwt.sign(
               { id: user.id, email: user.email },
               JWT_SECRET,
               { expiresIn: "1h" }
             );
 
-            // 🔥 Zapisujesz token w ciasteczku HttpOnly
             res.cookie("token", token, {
               httpOnly: true,
-              secure: true, // w produkcji → true
+              secure: true,
               sameSite: "none",
             });
 
@@ -132,8 +120,8 @@ app.get("/api/notes", auth, async (req, res) => {
 });
 
 app.get("/api/logout", (req, res) => {
-  res.clearCookie("token"); // usuwa JWT z ciasteczka
-  res.redirect("/api/login"); // przekierowanie
+  res.clearCookie("token");
+  res.redirect("/api/login");
 });
 
 app.get("/api/user", auth, async (req, res) => {
@@ -186,7 +174,6 @@ app.put("/api/user/password", auth, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
   try {
-    // pobieramy aktualne hasło
     const result = await db.query("SELECT password FROM users WHERE id = $1", [
       userId,
     ]);
@@ -197,16 +184,13 @@ app.put("/api/user/password", auth, async (req, res) => {
 
     const storedHash = result.rows[0].password;
 
-    // sprawdzamy stare hasło
     const match = await bcrypt.compare(oldPassword, storedHash);
     if (!match) {
       return res.status(403).json({ message: "Incorrect old password" });
     }
 
-    // haszujemy nowe hasło
     const newHash = await bcrypt.hash(newPassword, saltRounds);
 
-    // zapisujemy nowe hasło
     await db.query("UPDATE users SET password = $1 WHERE id = $2", [
       newHash,
       userId,
@@ -226,7 +210,6 @@ app.put("/api/user/email", auth, async (req, res) => {
   const { password, newEmail } = req.body;
 
   try {
-    // pobieramy aktualne hasło
     const result = await db.query("SELECT password FROM users WHERE id = $1", [
       userId,
     ]);
@@ -237,13 +220,11 @@ app.put("/api/user/email", auth, async (req, res) => {
 
     const storedHash = result.rows[0].password;
 
-    // sprawdzamy stare hasło
     const match = await bcrypt.compare(password, storedHash);
     if (!match) {
       return res.status(403).json({ message: "Incorrect old password" });
     }
 
-    // zapisujemy nowy email
     await db.query("UPDATE users SET email = $1 WHERE id = $2", [
       newEmail,
       userId,
@@ -265,11 +246,10 @@ app.put("/api/user/email", auth, async (req, res) => {
 });
 
 app.get("/api/notes/new", auth, (req, res) => {
-  res.render("noteForm", 
-  { 
-    mode: "create", 
-    note: null 
-    });
+  res.render("noteForm", {
+    mode: "create",
+    note: null,
+  });
 });
 
 app.post("/api/notes", auth, async (req, res) => {
@@ -277,21 +257,18 @@ app.post("/api/notes", auth, async (req, res) => {
   const { title, content } = req.body;
 
   try {
-    const result = await db.query("INSERT INTO notes (id_user, title, text) VALUES ($1, $2, $3) RETURNING id", 
-    [
-      userId,
-      title,
-      content
-    ]);
+    const result = await db.query(
+      "INSERT INTO notes (id_user, title, text) VALUES ($1, $2, $3) RETURNING id",
+      [userId, title, content]
+    );
 
-    if(!result.rowCount){
+    if (!result.rowCount) {
       return res.status(403).json({ message: "Note not added!" });
     }
 
     return res.redirect("/api/notes");
-
-  }catch(err){
-      return res.status(500).json({
+  } catch (err) {
+    return res.status(500).json({
       message: "Problem with adding note!",
       err,
     });
@@ -302,14 +279,12 @@ app.get("/api/notes/:id/edit/", auth, async (req, res) => {
   const userId = req.user.id;
   const noteId = req.params.id;
   try {
+    const result = await db.query(
+      "SELECT * FROM notes WHERE id = $1 AND id_user = $2",
+      [noteId, userId]
+    );
 
-    const result = await db.query("SELECT * FROM notes WHERE id = $1 AND id_user = $2",
-    [
-      noteId,
-      userId
-      ]);
-
-    if(result.rowCount === 0){
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Note not found!" });
     }
 
@@ -320,12 +295,11 @@ app.get("/api/notes/:id/edit/", auth, async (req, res) => {
       note: {
         title: note.title,
         content: note.text,
-        id: note.id
-      }
+        id: note.id,
+      },
     });
-
-  } catch(err){
-      return res.status(500).json({
+  } catch (err) {
+    return res.status(500).json({
       message: "Problem with getting edited note!",
       err,
     });
@@ -333,97 +307,59 @@ app.get("/api/notes/:id/edit/", auth, async (req, res) => {
 });
 
 app.put("/api/notes/:id", auth, async (req, res) => {
-
   const userId = req.user.id;
   const noteId = Number(req.params.id);
   const { title, content } = req.body;
 
-  //console.log(noteId);
   if (isNaN(noteId)) {
-  return res.status(400).json({ message: "Invalid note ID" });
+    return res.status(400).json({ message: "Invalid note ID" });
   }
 
-  try{
-
-    const result = await db.query("UPDATE notes SET title = $1, text = $2 WHERE id = $3 AND id_user = $4",
-    [
-      title,
-      content,
-      noteId,
-      userId
-      ]);
-    
-    //add returning for REACT
+  try {
+    const result = await db.query(
+      "UPDATE notes SET title = $1, text = $2 WHERE id = $3 AND id_user = $4",
+      [title, content, noteId, userId]
+    );
 
     if (result.rowCount === 0) {
       return res.status(403).json({ message: "Note not updated!" });
     }
 
-    // for EJS
     return res.redirect("/api/notes");
-    //for React
-    //return res.json({ message: "Note updated successfully" });
-
-  }catch(err){
-      return res.status(500).json({
+  } catch (err) {
+    return res.status(500).json({
       message: "Problem with saving edited note!",
       err,
     });
   }
-
 });
 
 app.delete("/api/notes/:id", auth, async (req, res) => {
   const userId = req.user.id;
   const noteId = Number(req.params.id);
-  
-    if (isNaN(noteId)) {
+
+  if (isNaN(noteId)) {
     return res.status(400).json({ message: "Invalid note ID" });
-    }
+  }
 
   try {
+    const result = await db.query(
+      "DELETE FROM notes WHERE id = $1 AND id_user = $2",
+      [noteId, userId]
+    );
 
-    const result = await db.query("DELETE FROM notes WHERE id = $1 AND id_user = $2",
-    [
-      noteId,
-      userId
-      ]);
-
-    if(result.rowCount === 0){
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Note not deleted!" });
     }
-  //for React
-  //return res.json({ message: "Note deleted successfully" });
-  return res.redirect("/api/notes");
-
-  } catch(err){
-      return res.status(500).json({
+    return res.redirect("/api/notes");
+  } catch (err) {
+    return res.status(500).json({
       message: "Problem with getting deleted note!",
       err,
     });
   }
 });
 
-/*endpointy do zrobienia
-USERS
-(+) GET /api/user - pobranie danych uzytkownika
-(+) PUT /api/user/email - zmiana email
-(+) PUT /api/user/password - zmiana hasła
-(+) DELETE /api/user - usunięcie konta
-(--)przed usunieciem konta usunac notatki uzytkownika
-
-NOTES CRUD
-(+)POST /api/notes - dodanie notatki
-(+)GET /api/notes/:id - pobranie notatki o danym id
-(+)PUT /api/notes/:id - aktualizacja notatki o danyn id
-DELETE /api/notes/:id - usuniecie notatki o danym id
-*/
-
-//app.use(express.static("public"));
-//console.log(">>> ROUTES END <<<");
-// app.listen(port, () => {
-//   console.log(`Server running on port ${port}`);
-// });
 const options = {
   key: fs.readFileSync("localhost-key.pem"),
   cert: fs.readFileSync("localhost.pem"),

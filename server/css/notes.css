@@ -1,6 +1,3 @@
-/* Plik: public/css/notes.css */
-
-/* Reset podstawowych marginesów */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +6,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #E8ECEF; /* Domyślne tło z Twojego pliku */
+  background-color: #e8ecef;
   color: #2b2d42;
   min-height: 100vh;
   padding: 40px 20px;
@@ -18,7 +15,6 @@ body {
   align-items: center;
 }
 
-/* Nagłówek i adres e-mail */
 h1 {
   text-align: center;
   color: #1a1a1a;
@@ -31,7 +27,6 @@ h1 {
   color: #4a5568;
 }
 
-/* Linki nawigacyjne (Zarządzanie kontem, Nowa notatka) */
 a {
   display: inline-block;
   color: #2b2d42;
@@ -50,7 +45,6 @@ a:hover {
   border-color: #adb5bd;
 }
 
-/* Przyciski (Wyloguj, Usuń) */
 button {
   font-family: inherit;
   font-size: 0.9rem;
@@ -72,7 +66,6 @@ button {
   background-color: #d62828;
 }
 
-/* Kontener główny z notatkami */
 #notes-container {
   width: 100%;
   max-width: 600px;
@@ -82,34 +75,36 @@ button {
   gap: 15px;
 }
 
-/* Stylizacja kart notatek */
-.note, #notes-container > div {
+.note,
+#notes-container > div {
   background-color: #ffffff;
-  border: 1px solid #dee2e6 !important; /* Nadpisuje ewentualny obrys inline z JS */
+  border: 1px solid #dee2e6 !important;
   border-radius: 8px;
   padding: 20px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.note h3, #notes-container h3 {
+.note h3,
+#notes-container h3 {
   margin-bottom: 8px;
   color: #1a1a1a;
   font-size: 1.25rem;
 }
 
-.note p, #notes-container p {
+.note p,
+#notes-container p {
   line-height: 1.5;
   margin-bottom: 12px;
   color: #4a5568;
 }
 
-.note small, #notes-container small {
+.note small,
+#notes-container small {
   color: #6c757d;
   font-size: 0.8rem;
   display: inline-block;
 }
 
-/* Przycisk usuwania w karcie notatki */
 #notes-container button {
   background-color: #e63946;
   color: #ffffff;
