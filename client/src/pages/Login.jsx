@@ -45,11 +45,11 @@ function Login() {
         navigate("/notes");
       } else {
         console.log("Email or password is not valid");
-        setErrorMessage(result.message);
+        setErrorMessage(result.message || "Email or password is not valid");
       }
     } catch (err) {
       console.error("Login error:", err);
-      setErrorMessage(err);
+      setErrorMessage(err?.message || "Server connection error.");
     }
   }
 

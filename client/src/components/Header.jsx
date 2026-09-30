@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
-import { useNavigate } from "react-router-dom";
 
 function Header() {
   const { user, loadingUser, logout } = useContext(UserContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isSettingsPage = location.pathname === "/settings";
 
   function settings() {
     navigate("/settings");
@@ -48,15 +49,14 @@ function Header() {
               <strong>{user.email}</strong>
             </span>
 
-            <button>
-              {location.pathname === "/settings" ? (
-                <NoteAltIcon onClick={goNotes} />
-              ) : (
-                <SettingsIcon onClick={settings} />
-              )}
+            <button
+              onClick={isSettingsPage ? goNotes : settings}
+              title={isSettingsPage ? "Notes" : "Settings"}
+            >
+              {isSettingsPage ? <NoteAltIcon /> : <SettingsIcon />}
             </button>
 
-            <button onClick={logout} className="logout-btn">
+            <button onClick={logout} className="logout-btn" title="Logout">
               <LogoutIcon />
             </button>
           </>
