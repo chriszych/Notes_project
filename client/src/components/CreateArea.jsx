@@ -23,12 +23,26 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
-    props.onAdd(note);
+
+    event.preventDefault();
+
+    if (!note.title.trim() && !note.content.trim()) {
+      return;
+    }
+
+    props.onAdd({
+      title: note.title.trim(),
+      content: note.content.trim()
+    });
+    
+    
     setNote({
       title: "",
       content: "",
     });
-    event.preventDefault();
+
+    setExpanded(false);
+    
   }
 
   function expand() {
@@ -56,7 +70,7 @@ function CreateArea(props) {
           rows={isExpanded ? 3 : 1}
         />
         <Zoom in={isExpanded}>
-          <Fab onClick={submitNote}>
+          <Fab type="submit">
             <AddIcon />
           </Fab>
         </Zoom>
