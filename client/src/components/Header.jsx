@@ -60,9 +60,7 @@ function Header() {
               <LogoutIcon />
             </button>
           </>
-        ) : (
-          <Link to="/register"></Link>
-        )}
+        ) : null }
       </div>
     </header>
   );
