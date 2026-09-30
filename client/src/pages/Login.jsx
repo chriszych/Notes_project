@@ -11,6 +11,7 @@ function Login() {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setErrorMessage("");
@@ -23,6 +24,10 @@ function Login() {
 
   async function handleLoginClick(e) {
     e.preventDefault();
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/login", {
@@ -50,6 +55,8 @@ function Login() {
     } catch (err) {
       console.error("Login error:", err);
       setErrorMessage(err?.message || "Server connection error.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -91,13 +98,14 @@ function Login() {
         )}
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button type="submit" style={{ flex: 1 }}>
+          <button type="submit" style={{ flex: 1 }} disabled={isSubmitting}>
             Login
           </button>
           <button
             type="button"
             style={{ flex: 1 }}
             onClick={handleRegisterClick}
+            disabled={isSubmitting}
           >
             Register
           </button>

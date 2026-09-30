@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import { Fab } from "@mui/material";
-import { Zoom } from "@mui/material";
+import { Fab, Zoom, CircularProgress } from "@mui/material";
 
 function CreateArea(props) {
   const [isExpanded, setExpanded] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [note, setNote] = useState({
     title: "",
     content: "",
@@ -22,27 +21,32 @@ function CreateArea(props) {
     });
   }
 
-  function submitNote(event) {
-
+  async function submitNote(event) {
     event.preventDefault();
 
     if (!note.title.trim() && !note.content.trim()) {
       return;
     }
 
-    props.onAdd({
-      title: note.title.trim(),
-      content: note.content.trim()
-    });
-    
-    
-    setNote({
-      title: "",
-      content: "",
-    });
+    try {
+      setIsSubmitting(true);
 
-    setExpanded(false);
-    
+      await props.onAdd({
+        title: note.title.trim(),
+        content: note.content.trim(),
+      });
+
+      setNote({
+        title: "",
+        content: "",
+      });
+
+      setExpanded(false);
+    } catch (err) {
+      console.error("Error during note adding:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function expand() {
@@ -51,13 +55,14 @@ function CreateArea(props) {
 
   return (
     <div>
-      <form className="create-note">
+      <form className="create-note" onSubmit={submitNote}>
         {isExpanded && (
           <input
             name="title"
             onChange={handleChange}
             value={note.title}
             placeholder="Title"
+            disabled={isSubmitting}
           />
         )}
 
@@ -68,10 +73,15 @@ function CreateArea(props) {
           value={note.content}
           placeholder="Take a note..."
           rows={isExpanded ? 3 : 1}
+          disabled={isSubmitting}
         />
         <Zoom in={isExpanded}>
-          <Fab type="submit">
-            <AddIcon />
+          <Fab type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              <AddIcon />
+            )}
           </Fab>
         </Zoom>
       </form>
