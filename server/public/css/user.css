@@ -1,6 +1,4 @@
-/* Plik: public/css/user.css */
 
-/* Reset i podstawowe style */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +7,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #E8ECEF; /* Tło spójne z aplikacją */
+  background-color: #E8ECEF;
   color: #2b2d42;
   min-height: 100vh;
   padding: 40px 20px;
@@ -17,13 +15,12 @@ body {
   justify-content: center;
 }
 
-/* Kontener główny */
+
 .container {
   width: 100%;
   max-width: 600px;
 }
 
-/* Nagłówek główny */
 h2 {
   color: #1a1a1a;
   font-size: 1.8rem;
@@ -33,7 +30,6 @@ h2 {
   gap: 12px;
 }
 
-/* Karty (sekcje ustawień) */
 .card {
   background-color: #ffffff;
   border: 1px solid #dee2e6;
@@ -47,7 +43,6 @@ h2 {
   padding: 24px;
 }
 
-/* Tytuły w kartach */
 .card-body h4 {
   color: #1a1a1a;
   font-size: 1.2rem;
@@ -57,7 +52,6 @@ h2 {
   gap: 8px;
 }
 
-/* Informacje o użytkowniku */
 .card-body p {
   color: #4a5568;
   line-height: 1.6;
@@ -72,7 +66,6 @@ h2 {
   color: #2b2d42;
 }
 
-/* Formularze i pola do wprowadzania tekstu */
 .mb-3 {
   margin-bottom: 16px;
 }
@@ -103,7 +96,6 @@ h2 {
   box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.15);
 }
 
-/* Domyślny wygląd przycisków */
 button, .btn {
   display: inline-block;
   font-family: inherit;
@@ -126,7 +118,6 @@ button:active, .btn:active {
   transform: translateY(1px);
 }
 
-/* Przycisk usuwania konta */
 button[onclick="deleteAccount()"], .btn-danger {
   background-color: #e63946;
   color: #ffffff;
@@ -137,7 +128,6 @@ button[onclick="deleteAccount()"]:hover, .btn-danger:hover {
   background-color: #d62828;
 }
 
-/* Link "Powrót" */
 a {
   display: inline-block;
   color: #2b2d42;
@@ -156,7 +146,6 @@ a:hover {
   border-color: #adb5bd;
 }
 
-/* Komunikaty błędów/sukcesu */
 #message, .text-danger {
   color: #e63946;
   font-size: 0.9rem;

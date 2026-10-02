@@ -6,7 +6,7 @@ export default function auth(req, res, next) {
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: "Brak tokenu, wymagane logowanie",
+      message: "No token, login required",
     });
   }
 
@@ -17,7 +17,7 @@ export default function auth(req, res, next) {
   } catch (err) {
     return res.status(401).json({
       success: false,
-      message: "Nieprawidłowy lub wygasły token",
+      message: "Token is not valid or overdue",
     });
   }
 }
