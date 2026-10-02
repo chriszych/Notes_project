@@ -1,6 +1,6 @@
 import express from "express";
 import auth from "../middleware/auth.js";
-import methodOverride from "../middleware/methodOverride.js";
+//import methodOverride from "../middleware/methodOverride.js";
 
 import {
   addUser,
@@ -14,7 +14,7 @@ import {
 
 const router = express.Router();
 
-router.use(methodOverride);
+//router.use(methodOverride);
 
 router.post("/login", loginUser);
 router.post("/register", addUser);
