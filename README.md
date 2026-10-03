@@ -95,14 +95,22 @@ npm run dev
 Open your browser and navigate to: http://localhost:5173
 
 🔌 API Endpoints
-Authentication & Users (/api/users)
-POST /api/users/register – Register a new user
+Authentication & Users (/api)
 
-POST /api/users/login – Authenticate user and issue JWT cookie
+POST /api/register – Register a new user
 
-POST /api/users/logout – Log out user (clear JWT cookie)
+POST /api/login – Authenticate user and issue JWT cookie
 
-GET /api/users/me – Fetch current authenticated user profile
+POST /api/logout – Log out user (clear JWT cookie)
+
+GET /api/user - Get user data
+
+PUT /api/user/password - update user's password
+
+PUT /api/user/email - update user's email
+
+DELETE /api/user - delete user's account
+
 
 Notes (/api/notes)
 GET /api/notes – Fetch all notes belonging to the authenticated user

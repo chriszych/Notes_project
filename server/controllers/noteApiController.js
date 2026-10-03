@@ -85,49 +85,6 @@ export async function createNote(req, res) {
   }
 }
 
-// export async function getNoteById(req, res) {
-//   const userId = req.user.id;
-//   const noteId = Number(req.params.id);
-
-//   if (isNaN(noteId)) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "Invalid note ID format",
-//     });
-//   }
-
-//   try {
-//     const result = await db.query(
-//       "SELECT id, title, text FROM notes WHERE id = $1 AND id_user = $2",
-//       [noteId, userId]
-//     );
-
-//     if (result.rowCount === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Note not found",
-//       });
-//     }
-
-//     const note = result.rows[0];
-
-//     return res.status(200).json({
-//       success: true,
-//       data: {
-//         id: note.id,
-//         title: note.title,
-//         content: note.text,
-//       },
-//     });
-//   } catch (err) {
-//     console.error("Database error during fetching note:", err);
-//     return res.status(500).json({
-//       success: false,
-//       message: "An error occurred while fetching the note",
-//     });
-//   }
-// }
-
 export async function updateNote(req, res) {
   const userId = req.user.id;
   const noteId = Number(req.params.id);
