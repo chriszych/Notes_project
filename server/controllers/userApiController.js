@@ -86,7 +86,7 @@ export async function loginUser(req, res) {
   }
 }
 
-export function logoutUserApi(req, res) {
+export function logoutUser(req, res) {
   try {
     res.clearCookie("token");
 

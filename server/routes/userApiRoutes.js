@@ -1,11 +1,10 @@
 import express from "express";
 import auth from "../middleware/auth.js";
-//import methodOverride from "../middleware/methodOverride.js";
 
 import {
   addUser,
   loginUser,
-  logoutUserApi,
+  logoutUser,
   getUserData,
   deleteUser,
   updatePassword,
@@ -14,11 +13,9 @@ import {
 
 const router = express.Router();
 
-//router.use(methodOverride);
-
 router.post("/login", loginUser);
 router.post("/register", addUser);
-router.post("/logout", logoutUserApi);
+router.post("/logout", logoutUser);
 
 router.get("/user", auth, getUserData);
 router.put("/user/email", auth, updateEmail);
