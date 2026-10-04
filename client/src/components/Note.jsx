@@ -14,7 +14,7 @@ function Note(props) {
   const [editedContent, setEditedContent] = useState(props.content);
 
   async function handleDeleteClick() {
-    if (!window.confirm("Are you sure to delete this note?")) return;
+
     try {
       setIsSubmitting(true);
       setErrorMessage("");
