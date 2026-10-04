@@ -1,3 +1,4 @@
+Markdown
 # 📝 Notes App
 
 A full-stack web application for managing personal notes with secure user authentication, built using **Node.js**, **Express.js**, **React**, **Vite**, and **PostgreSQL**.
@@ -36,7 +37,7 @@ notes-app/
 ├── client/                 # Frontend React application (Vite)
 │   ├── public/             # Static assets
 │   └── src/
-│       ├── components/     # Reusable UI components
+│       ├── components/     # Reusable UI components (Header, Footer, Note, CreateArea, etc.)
 │       ├── context/        # React Context (UserContext)
 │       ├── pages/          # Application views (Login, Register, Notes, Settings)
 │       ├── App.jsx         # Main application component & routes
@@ -44,98 +45,90 @@ notes-app/
 │
 └── server/                 # Backend Node.js application (Express)
     ├── config/             # Database connection (PostgreSQL) and JWT configuration
-    ├── controllers/        # Business logic handlers
+    ├── controllers/        # Business logic handlers (noteApiController, userApiController)
     ├── middleware/         # Authentication and request middleware
-    ├── routes/             # API route definitions
+    ├── routes/             # API route definitions (/api/notes, /api/users)
     └── index.js            # Express server entry point
-```
-
----
-
-## ⚙️ Prerequisites
-
+⚙️ Prerequisites
 Ensure you have the following installed on your machine before running the application:
 
 - Node.js (v16 or higher)
 - npm
-- PostgreSQL
+-PostgreSQL
 
----
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/chriszych/Notes_project.git
+🚀 Getting Started
+1. Clone the Repository
+Bash
+git clone [https://github.com/chriszych/Notes_project.git]
 cd notes-app
-```
-
-### 2. Backend Setup (Server)
+2. Backend Setup (Server)
 Navigate to the server directory:
-```bash
+
+Bash
 cd server
-```
-
 Install dependencies:
-```bash
-npm install
-```
 
-Create a `.env` file in the `server/` root directory with your database and JWT configurations:
-```env
+Bash
+npm install
+Create a .env file in the server/ root directory with your database and JWT configurations:
+
+Fragment kodu
 PORT=5000
 DATABASE_URL=postgres://postgres_user:postgres_password@localhost:5432/notesdb
 JWT_SECRET=your_super_secret_jwt_key
-```
-
 Run the development server:
-```bash
-npm run dev
-```
 
-### 3. Frontend Setup (Client)
+Bash
+cd server
+nodemon .\server.js
+
+3. Frontend Setup (Client)
 Open a new terminal window and navigate to the client directory:
-```bash
+
+Bash
 cd client
 npm install
-```
 
 Start the Vite development server:
-```bash
+
 npm run dev
-```
+Open your browser and navigate to: http://localhost:5173
 
-Open your browser and navigate to: `http://localhost:5173`
+🔌 API Endpoints
+Authentication & Users (/api)
 
----
+POST /api/register – Register a new user
 
-## 🔌 API Endpoints
+POST /api/login – Authenticate user and issue JWT cookie
 
-### Authentication & Users (`/api`)
-- `POST /api/register` – Register a new user
-- `POST /api/login` – Authenticate user and issue JWT cookie
-- `POST /api/logout` – Log out user (clear JWT cookie)
-- `GET /api/user` – Get user data
-- `PUT /api/user/password` – Update user's password
-- `PUT /api/user/email` – Update user's email
-- `DELETE /api/user` – Delete user's account
+POST /api/logout – Log out user (clear JWT cookie)
 
-### Notes (`/api/notes`)
-- `GET /api/notes` – Fetch all notes belonging to the authenticated user
-- `POST /api/notes` – Create a new note
-- `PUT /api/notes/:id` – Update an existing note
-- `DELETE /api/notes/:id` – Delete a note
+GET /api/user - Get user data
 
----
+PUT /api/user/password - update user's password
 
-## 🔒 Security Best Practices
+PUT /api/user/email - update user's email
 
+DELETE /api/user - delete user's account
+
+
+Notes (/api/notes)
+GET /api/notes – Fetch all notes belonging to the authenticated user
+
+POST /api/notes – Create a new note
+
+PUT /api/notes/:id – Update an existing note
+
+DELETE /api/notes/:id – Delete a note
+
+🔒 Security Best Practices
 Before deploying to production, make sure to:
-- Add `.env` and SSL keys (`*.pem`) to `.gitignore` to prevent committing sensitive secrets.
-- Hash user passwords securely in PostgreSQL using `bcrypt`.
-- Set JWT cookies with `httpOnly: true`, `secure: true` (for HTTPS), and appropriate `sameSite` attributes.
 
----
+Add .env and SSL keys (*.pem) to .gitignore to prevent committing sensitive secrets.
+
+Hash user passwords securely in PostgreSQL using bcrypt.
+
+Set JWT cookies with httpOnly: true, secure: true (for HTTPS), and appropriate sameSite attributes.
 
 ## 🗄️ Database Setup (PostgreSQL)
 
@@ -168,4 +161,5 @@ erDiagram
     }
 ```
 
-If you are using a GUI database manager (such as **pgAdmin**, **DBeaver**, or **TablePlus**), open a new SQL query tab connected to your `notes` database, paste the contents of `server/db/init.sql`, and execute the query.
+
+  if you are using a GUI database manager (such as pgAdmin, DBeaver, or TablePlus), open a new SQL query tab connected to your notes database, paste the contents of server/db/init.sql, and execute the query.
