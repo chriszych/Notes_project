@@ -139,7 +139,6 @@ The application uses PostgreSQL as its primary relational database. The schema i
 - **`users`**: Stores user authentication credentials (`email`, hashed `password`).
 - **`notes`**: Stores individual notes linked to a specific user (`id_user` -> `users.id` with `ON DELETE CASCADE`).
 
-
 ```mermaid
 erDiagram
     USERS ||--o{ NOTES : "has"
@@ -161,5 +160,6 @@ erDiagram
         timestamp updated_at
     }
 ```
+
 
   if you are using a GUI database manager (such as pgAdmin, DBeaver, or TablePlus), open a new SQL query tab connected to your notes database, paste the contents of server/db/init.sql, and execute the query.
