@@ -129,3 +129,37 @@ Add .env and SSL keys (*.pem) to .gitignore to prevent committing sensitive secr
 Hash user passwords securely in PostgreSQL using bcrypt.
 
 Set JWT cookies with httpOnly: true, secure: true (for HTTPS), and appropriate sameSite attributes.
+
+## 🗄️ Database Setup (PostgreSQL)
+
+The application uses PostgreSQL as its primary relational database. The schema includes automatic timestamp tracking (`created_at`, `updated_at`) via triggers and foreign key cascading for data integrity.
+
+### Database Schema Structure
+
+- **`users`**: Stores user authentication credentials (`email`, hashed `password`).
+- **`notes`**: Stores individual notes linked to a specific user (`id_user` -> `users.id` with `ON DELETE CASCADE`).
+
+
+```mermaid
+erDiagram
+    USERS ||--o{ NOTES : "has"
+
+    USERS {
+        int id PK
+        string email UK
+        string password
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    NOTES {
+        int id PK
+        int id_user FK
+        string title
+        text text
+        timestamp created_at
+        timestamp updated_at
+    }
+```
+
+  if you are using a GUI database manager (such as pgAdmin, DBeaver, or TablePlus), open a new SQL query tab connected to your notes database, paste the contents of server/db/init.sql, and execute the query.
