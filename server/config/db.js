@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const db = new pg.Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 
-db.connect();
+db.on("error", (err) => {
+  console.error("Unexpected error connection with PostgreSQL server:", err);
+});
 
 export default db;
