@@ -1,12 +1,12 @@
 import pg from "pg";
+import dotenv from "dotenv";
 
-const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "notes",
-  password: "123456",
-  port: 5432,
+dotenv.config();
+
+const db = new pg.Pool({
+  connectionString: process.env.DATABASE_URL
 });
+
 db.connect();
 
 export default db;
