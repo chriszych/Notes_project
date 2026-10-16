@@ -1,8 +1,13 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import https from "https";
 import fs from "fs";
 import app from "./app.js";
 
-const port = 3000;
+
+const port = process.env.PORT || 3000;
 
 const options = {
   key: fs.readFileSync("localhost-key.pem"),

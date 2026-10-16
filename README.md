@@ -83,7 +83,7 @@ npm install
 
 Create a `.env` file in the `server/` root directory with your database and JWT configurations:
 ```env
-PORT=5000
+PORT=3000
 DATABASE_URL=postgres://postgres_user:postgres_password@localhost:5432/notesdb
 JWT_SECRET=your_super_secret_jwt_key
 ```
