@@ -47,7 +47,7 @@ notes-app/
     ├── controllers/        # Business logic handlers
     ├── middleware/         # Authentication and request middleware
     ├── routes/             # API route definitions
-    └── index.js            # Express server entry point
+    └── server.js            # Express server entry point
 ```
 
 ---
