@@ -40,7 +40,7 @@ body {
   color: var(--text-main);
 }
 
-#root {
+.app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;

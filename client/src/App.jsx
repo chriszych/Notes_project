@@ -13,7 +13,8 @@ function App() {
   return (
     <BrowserRouter>
       <UserProvider>
-        <div id="root">
+        {/* <div id="root"> */}
+        <div className="app">
           <Header />
           <main>
             <Routes>
