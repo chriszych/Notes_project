@@ -88,8 +88,6 @@ function Notes() {
   async function saveNote(noteId, updatedNote) {
     let data = null;
 
-    try {
-      if (noteId) {
         const res = await fetch(`/api/notes/${noteId}`, {
           method: "PUT",
           headers: {
@@ -102,21 +100,14 @@ function Notes() {
         data = await res.json();
 
         if (!res.ok || !data.success) {
-          alert(data.message || "Error during modyfing note on server");
-          return;
+          throw new Error(data.message || "Error during modyfing note on server");
         }
-      }
 
-      const returnedNote = data.data;
+        setNotes((prev) => [data.data, ...prev.filter((note) => note.id !== noteId)]
 
-      setNotes((prevNotes) => {
-        const restNotes = prevNotes.filter((note) => note.id !== noteId);
-        return [returnedNote, ...restNotes];
-      });
-    } catch (err) {
-      console.error("Error during modifying the note:", err);
-    }
+        );
   }
+
 
   if (loading) {
     return <div className="text-center mt-5">Loading notes...</div>;

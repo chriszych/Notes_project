@@ -38,7 +38,7 @@ function Note(props) {
       return;
     }
     try {
-      setIsEdited(false);
+      setIsSubmitting(true);
       setErrorMessage("");
       await props.onSave({
         title: editedTitle.trim(),
