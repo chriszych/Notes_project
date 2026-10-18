@@ -10,6 +10,7 @@ function Settings() {
 
   const [formData, setFormData] = useState({
     newEmail: "",
+    confirmPassword: "",
     newPassword: "",
     oldPassword: "",
   });
@@ -26,7 +27,7 @@ function Settings() {
     event.preventDefault();
 
     const newEmail = formData.newEmail;
-    const password = formData.newPassword;
+    const password = formData.confirmPassword;
 
     try {
       const res = await fetch("/api/user/email", {
@@ -157,10 +158,10 @@ function Settings() {
             <label>Confirm Password</label>
             <input
               type="password"
-              name="newPassword"
+              name="confirmPassword"
               id="pass-confirm"
-              autoComplete="password"
-              value={formData.newPassword}
+              autoComplete="current-password"
+              value={formData.confirmPassword}
               onChange={handleChange}
               required
             />
