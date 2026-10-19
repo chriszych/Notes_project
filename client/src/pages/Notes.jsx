@@ -36,29 +36,24 @@ function Notes() {
   }, []);
 
   async function addNote(newNote) {
-    try {
-      const res = await fetch("/api/notes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(newNote),
-      });
+    const res = await fetch("/api/notes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(newNote),
+    });
 
-      const result = await res.json();
+    const result = await res.json();
 
-      if (res.ok && result.success) {
-        const savedNote = result.data || newNote;
-
-        setNotes((prevNotes) => [savedNote, ...prevNotes]);
-      } else {
-        alert(result.message || "Error during adding new note");
-      }
-    } catch (err) {
-      console.error("Error during adding new note:", err);
+    if (!res.ok || !result.success) {
+      throw new Error(result.message || "Error during adding new note");
     }
+
+    const savedNote = result.data || newNote;
+    setNotes((prevNotes) => [savedNote, ...prevNotes]);
   }
 
   async function deleteNote(id, noteId) {
@@ -88,26 +83,26 @@ function Notes() {
   async function saveNote(noteId, updatedNote) {
     let data = null;
 
-        const res = await fetch(`/api/notes/${noteId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(updatedNote),
-        });
-        data = await res.json();
+    const res = await fetch(`/api/notes/${noteId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(updatedNote),
+    });
+    data = await res.json();
 
-        if (!res.ok || !data.success) {
-          throw new Error(data.message || "Error during modyfing note on server");
-        }
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || "Error during modyfing note on server");
+    }
 
-        setNotes((prev) => [data.data, ...prev.filter((note) => note.id !== noteId)]
-
-        );
+    setNotes((prev) => [
+      data.data,
+      ...prev.filter((note) => note.id !== noteId),
+    ]);
   }
-
 
   if (loading) {
     return <div className="text-center mt-5">Loading notes...</div>;
