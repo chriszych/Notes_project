@@ -4,17 +4,17 @@ import CreateArea from "../components/CreateArea";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const userRes = await fetch("/api/user", { credentials: "include" });
-        const userData = await userRes.json();
-        if (userData.success) {
-          setUser(userData.data);
-        }
+        // const userRes = await fetch("/api/user", { credentials: "include" });
+        // const userData = await userRes.json();
+        // if (userData.success) {
+        //   setUser(userData.data);
+        // }
 
         const notesRes = await fetch("/api/notes", {
           headers: { Accept: "application/json" },
@@ -46,11 +46,11 @@ function Notes() {
       body: JSON.stringify(newNote),
     });
 
-    const result = await res.json();
-
     if (!res.ok || !result.success) {
       throw new Error(result.message || "Error during adding new note");
     }
+
+    const result = await res.json();
 
     const savedNote = result.data || newNote;
     setNotes((prevNotes) => [savedNote, ...prevNotes]);
