@@ -4,18 +4,11 @@ import CreateArea from "../components/CreateArea";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
-  //const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // const userRes = await fetch("/api/user", { credentials: "include" });
-        // const userData = await userRes.json();
-        // if (userData.success) {
-        //   setUser(userData.data);
-        // }
-
         const notesRes = await fetch("/api/notes", {
           headers: { Accept: "application/json" },
           credentials: "include",
