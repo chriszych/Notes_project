@@ -39,11 +39,11 @@ function Notes() {
       body: JSON.stringify(newNote),
     });
 
+    const result = await res.json();
+
     if (!res.ok || !result.success) {
       throw new Error(result.message || "Error during adding new note");
     }
-
-    const result = await res.json();
 
     const savedNote = result.data || newNote;
     setNotes((prevNotes) => [savedNote, ...prevNotes]);
