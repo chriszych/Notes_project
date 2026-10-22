@@ -43,6 +43,10 @@ export async function addUser(req, res) {
 export async function loginUser(req, res) {
   const email = req.body.username;
   const loginPassword = req.body.password;
+  const INVALID_CREDENTIALS_MESSAGE = {
+    success: false,
+    message: "Incorrect user or password",
+  };
 
   try {
     const result = await db.query(
@@ -50,23 +54,25 @@ export async function loginUser(req, res) {
       [email]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
     const user = result.rows[0];
     const storedHashedPassword = user.password;
 
-    const match = await bcrypt.compare(loginPassword, storedHashedPassword);
+    const match = user && await bcrypt.compare(loginPassword, storedHashedPassword);
+
+    // if (result.rows.length === 0) {
+    //   return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
+    //   //   success: false,
+    //   //   message: "Incorrect user or password",
+    //   // });
+    // }
+
+
 
     if (!match) {
-      return res.status(400).json({
-        success: false,
-        message: "Incorrect password",
-      });
+      return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
+      //   success: false,
+      //   message: "Incorrect user or password",
+      // });
     }
 
     const token = generateToken({ id: user.id, email: user.email });
