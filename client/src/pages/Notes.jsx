@@ -49,28 +49,23 @@ function Notes() {
     setNotes((prevNotes) => [savedNote, ...prevNotes]);
   }
 
-  async function deleteNote(id, noteId) {
+  async function deleteNote(noteId) {
     if (!window.confirm("Are you sure to delete the note ?")) return;
 
-    try {
-      if (noteId) {
-        const res = await fetch(`/api/notes/${noteId}`, {
-          method: "DELETE",
-          headers: { Accept: "application/json" },
-          credentials: "include",
-        });
-        const data = await res.json();
+    const res = await fetch(`/api/notes/${noteId}`, {
+      method: "DELETE",
+      headers: { Accept: "application/json" },
+      credentials: "include",
+    });
 
-        if (!res.ok || !data.success) {
-          alert(data.message || "Error during deleting note from server");
-          return;
-        }
-      }
+    const data = await res.json();
 
-      setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
-    } catch (err) {
-      console.error("Error during deleting the note:", err);
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || "Error during deleting note from server");
     }
+
+    //setNotes((prevNotes) => prevNotes.filter((_, index) => index !== id));
+    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
   }
 
   async function saveNote(noteId, updatedNote) {
@@ -112,13 +107,13 @@ function Notes() {
           notes.map((noteItem, index) => (
             <Note
               key={noteItem.id || index}
-              id={index}
-              dbId={noteItem.id}
+              //id={index}
+              //dbId={noteItem.id}
               title={noteItem.title}
               content={noteItem.content || noteItem.text}
               createdAt={new Date(noteItem.createdAt).toLocaleString("pl-PL")}
               updatedAt={new Date(noteItem.updatedAt).toLocaleString("pl-PL")}
-              onDelete={() => deleteNote(index, noteItem.id)}
+              onDelete={() => deleteNote(noteItem.id)}
               onSave={(updatedNote) => saveNote(noteItem.id, updatedNote)}
             />
           ))
