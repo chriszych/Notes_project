@@ -11,6 +11,12 @@ export function UserProvider({ children }) {
   const fetchUser = async () => {
     try {
       const res = await fetch("/api/user", { credentials: "include" });
+
+      if (res.status === 401) {
+        setUser(null);
+        return;
+      }
+
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
@@ -18,9 +24,10 @@ export function UserProvider({ children }) {
           return;
         }
       }
+
       setUser(null);
     } catch (err) {
-      console.error("Błąd autoryzacji:", err);
+      console.error("Błąd połączenia z serwerem podczas autoryzacji:", err);
       setUser(null);
     } finally {
       setLoadingUser(false);
