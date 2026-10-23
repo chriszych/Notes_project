@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import db from "../config/db.js";
 import { generateToken, jwtCookieOptions } from "../config/jwt.js";
 
@@ -55,9 +55,15 @@ export async function loginUser(req, res) {
     );
 
     const user = result.rows[0];
+
+    if (!user) {
+      return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
+    }
+
     const storedHashedPassword = user.password;
 
-    const match = user && await bcrypt.compare(loginPassword, storedHashedPassword);
+    const match =
+      user && (await bcrypt.compare(loginPassword, storedHashedPassword));
 
     // if (result.rows.length === 0) {
     //   return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
@@ -65,8 +71,6 @@ export async function loginUser(req, res) {
     //   //   message: "Incorrect user or password",
     //   // });
     // }
-
-
 
     if (!match) {
       return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
