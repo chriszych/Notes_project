@@ -48,13 +48,19 @@ function Login() {
       if (response.ok && result.success) {
         await fetchUser();
         navigate("/notes");
-      } else {
-        console.log("Email or password is not valid");
-        setErrorMessage(result.message || "Email or password is not valid");
+      } 
+      
+      if (response.status >= 500) {
+        setErrorMessage("Server error. Please try again later.");
+        return;
       }
+
+      setErrorMessage(result.message || "Invalid email or password."
+      );
+
     } catch (err) {
       console.error("Login error:", err);
-      setErrorMessage(err?.message || "Server connection error.");
+      setErrorMessage("Could not connect to the server. Check your connection.");
     } finally {
       setIsSubmitting(false);
     }
@@ -99,7 +105,7 @@ function Login() {
 
         <div style={{ display: "flex", gap: "10px" }}>
           <button type="submit" style={{ flex: 1 }} disabled={isSubmitting}>
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
           <button
             type="button"

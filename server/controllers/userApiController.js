@@ -48,7 +48,7 @@ export async function loginUser(req, res) {
     message: "Incorrect user or password",
   };
 
-  try {
+ // try {
     const result = await db.query(
       "SELECT id, email, password FROM users WHERE email = $1",
       [email]
@@ -87,13 +87,13 @@ export async function loginUser(req, res) {
       success: true,
       message: "Login successful",
     });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-      success: false,
-      message: "Problem with logging in!",
-    });
-  }
+  // } catch (err) {
+  //   console.log(err);
+  //   return res.status(500).json({
+  //     success: false,
+  //     message: "Problem with logging in!",
+  //   });
+  // }
 }
 
 export function logoutUser(req, res) {

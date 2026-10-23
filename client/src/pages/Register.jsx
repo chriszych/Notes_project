@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./../../public/styles.css";
+//import "./../../public/styles.css";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
@@ -12,6 +12,7 @@ function Register() {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setErrorMessage("");
@@ -29,7 +30,10 @@ function Register() {
 
   async function handleRegisterClick(e) {
     e.preventDefault();
-    let result = null;
+    //let result = null;
+    setIsSubmitting(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
     try {
       const response = await fetch("/api/register", {
@@ -45,21 +49,31 @@ function Register() {
         }),
       });
 
-      result = await response.json();
+      const result = await response.json();
 
       if (response.ok && result.success) {
         setFormData({ email: "", password: "" });
         setSuccessMessage(result.message || "User added, try login");
-      } else {
-        setFormData({ email: "", password: "" });
-        setErrorMessage(result.message || "Error during user registration.");
+        return;
+       } 
+
+       if (response.status >= 500) {
+        setErrorMessage("Server error, try again later.");
+        return;
       }
+
+      setFormData((prev) => ({ ...prev, password: "" }));
+      setErrorMessage(result.message || "Error during registration.");
+
+      //else {
+      //   setFormData({ email: "", password: "" });
+      //   setErrorMessage(result.message || "Error during user registration.");
+      // }
     } catch (err) {
-      setErrorMessage(
-        result?.message ||
-          err.message ||
-          "Server connection error."
-      );
+      console.error("Register request error:", err);
+      setErrorMessage("Server connection error.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -72,6 +86,7 @@ function Register() {
           name="email"
           required
           placeholder="e-mail"
+          autoComplete="username"
           value={formData.email}
           onChange={handleChange}
         />
@@ -81,6 +96,7 @@ function Register() {
           name="password"
           required
           placeholder="password"
+          autoComplete="new-password"
           value={formData.password}
           onChange={handleChange}
         />
@@ -103,8 +119,8 @@ function Register() {
         )}
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button type="submit" style={{ flex: 1 }}>
-            Register
+          <button type="submit" style={{ flex: 1 }} disabled={isSubmitting}>
+            {isSubmitting ? "Registering..." : "Register"}
           </button>
           <button type="button" style={{ flex: 1 }} onClick={handleLoginClick}>
             Login
