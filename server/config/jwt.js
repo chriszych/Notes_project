@@ -2,6 +2,10 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing in .env");
+}
+
 export const JWT_SECRET = process.env.JWT_SECRET;
 
 export function generateToken(payload) {
@@ -17,5 +21,8 @@ export function verifyToken(token) {
 export const jwtCookieOptions = {
   httpOnly: true,
   secure: true,
-  sameSite: "none",
+  sameSite: "strict",
+  path: "/",
 };
+
+export const JWT_MAX_AGE_MS = 60 * 60 * 1000;

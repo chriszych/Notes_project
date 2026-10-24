@@ -90,7 +90,7 @@ JWT_SECRET=your_super_secret_jwt_key
 
 Run the development server:
 ```bash
-nodemon .\server.js
+npm run dev
 ```
 
 ### 3. Frontend Setup (Client)

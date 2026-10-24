@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from "../config/db.js";
-import { generateToken, jwtCookieOptions } from "../config/jwt.js";
+import { generateToken, JWT_MAX_AGE_MS, jwtCookieOptions } from "../config/jwt.js";
 
 const saltRounds = 10;
 
@@ -74,7 +74,9 @@ export async function loginUser(req, res) {
   }
 
   const token = generateToken({ id: user.id, email: user.email });
-  res.cookie("token", token, jwtCookieOptions);
+
+  res.cookie("token", token, { ...jwtCookieOptions, maxAge: JWT_MAX_AGE_MS });
+  
   return res.json({
     success: true,
     message: "Login successful",
@@ -82,7 +84,8 @@ export async function loginUser(req, res) {
 }
 
 export function logoutUser(req, res) {
-  res.clearCookie("token");
+
+  res.clearCookie("token", jwtCookieOptions);
 
   return res.status(200).json({
     success: true,
@@ -127,7 +130,8 @@ export async function deleteUser(req, res) {
     });
   }
 
-  res.clearCookie("token");
+  res.clearCookie("token", jwtCookieOptions);
+
   return res.json({
     success: true,
     message: "User deleted",
@@ -211,7 +215,7 @@ export async function updateEmail(req, res) {
   ]);
 
   const newToken = generateToken({ id: userId, email: newEmail });
-  res.cookie("token", newToken, jwtCookieOptions);
+  res.cookie("token", newToken, { ...jwtCookieOptions, maxAge: JWT_MAX_AGE_MS });
 
   return res.json({
     success: true,
