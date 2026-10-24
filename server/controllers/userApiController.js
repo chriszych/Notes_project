@@ -5,8 +5,23 @@ import { generateToken, jwtCookieOptions } from "../config/jwt.js";
 const saltRounds = 10;
 
 export async function addUser(req, res) {
-  const email = req.body.username;
+  const email = req.body.username?.trim().toLowerCase();
   const password = req.body.password;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Email and password are required",
+    });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters",
+    });
+  }
+
   const checkResult = await db.query("SELECT id FROM users WHERE email = $1", [
     email,
   ]);
@@ -31,7 +46,6 @@ export async function addUser(req, res) {
 }
 
 export async function loginUser(req, res) {
-
   const email = req.body.username;
   const loginPassword = req.body.password;
 
@@ -68,7 +82,6 @@ export async function loginUser(req, res) {
 }
 
 export function logoutUser(req, res) {
-
   res.clearCookie("token");
 
   return res.status(200).json({
@@ -78,7 +91,6 @@ export function logoutUser(req, res) {
 }
 
 export async function getUserData(req, res) {
-
   const userId = req.user.id;
 
   const result = await db.query(
@@ -101,7 +113,6 @@ export async function getUserData(req, res) {
 }
 
 export async function deleteUser(req, res) {
-
   const userId = req.user.id;
 
   const result = await db.query(
@@ -124,7 +135,6 @@ export async function deleteUser(req, res) {
 }
 
 export async function updatePassword(req, res) {
-
   const userId = req.user.id;
   const { oldPassword, newPassword } = req.body;
   const result = await db.query("SELECT password FROM users WHERE id = $1", [
@@ -163,17 +173,9 @@ export async function updatePassword(req, res) {
 }
 
 export async function updateEmail(req, res) {
-
   const userId = req.user.id;
 
   const { password, newEmail } = req.body;
-
-  if (isNaN(userId)) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid user ID",
-    });
-  }
 
   if (password === undefined || newEmail === undefined) {
     return res.status(400).json({
