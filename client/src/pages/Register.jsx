@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-//import "./../../public/styles.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
@@ -30,48 +30,42 @@ function Register() {
 
   async function handleRegisterClick(e) {
     e.preventDefault();
-    //let result = null;
     setIsSubmitting(true);
     setErrorMessage("");
     setSuccessMessage("");
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
+      const response = await axios.post(
+        "/api/register",
+        {
           username: formData.email,
           password: formData.password,
-        }),
-      });
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
+      if (response.data.success) {
         setFormData({ email: "", password: "" });
-        setSuccessMessage(result.message || "User added, try login");
-        return;
-       } 
-
-       if (response.status >= 500) {
-        setErrorMessage("Server error, try again later.");
+        setSuccessMessage(response.data.message || "User added, try login");
         return;
       }
-
-      setFormData((prev) => ({ ...prev, password: "" }));
-      setErrorMessage(result.message || "Error during registration.");
-
-      //else {
-      //   setFormData({ email: "", password: "" });
-      //   setErrorMessage(result.message || "Error during user registration.");
-      // }
     } catch (err) {
-      console.error("Register request error:", err);
-      setErrorMessage("Server connection error.");
+      if (err.response) {
+        if (err.response.status >= 500) {
+          console.error("Register server error:", err);
+          setErrorMessage("Server error. Please try again later.");
+        } else {
+          setFormData((prev) => ({ ...prev, password: "" }));
+          setErrorMessage(
+            err.response.data?.message || "Error during registration."
+          );
+        }
+      } else {
+        console.error("Register request error:", err);
+        setErrorMessage("Server connection error.");
+      }
     } finally {
       setIsSubmitting(false);
     }
