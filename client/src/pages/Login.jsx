@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -30,37 +31,36 @@ function Login() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
+      const response = await axios.post(
+        "/api/login",
+        {
           username: formData.email,
           password: formData.password,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        await fetchUser();
-        navigate("/notes");
-      } 
-      
-      if (response.status >= 500) {
-        setErrorMessage("Server error. Please try again later.");
-        return;
-      }
-
-      setErrorMessage(result.message || "Invalid email or password."
+        },
+        {
+          withCredentials: true,
+        }
       );
 
+      if (response.data.success) {
+        await fetchUser();
+        navigate("/notes");
+      }
     } catch (err) {
-      console.error("Login error:", err);
-      setErrorMessage("Could not connect to the server. Check your connection.");
+      if (err.response) {
+        if (err.response.status >= 500) {
+          console.error("Login server error:", err);
+          setErrorMessage("Server error. Please try again later.");
+        } else {
+          setErrorMessage(
+            err.response.data?.message || "Invalid email or password."
+          );
+        }
+      } else {
+        setErrorMessage(
+          "Could not connect to the server. Check your connection."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
