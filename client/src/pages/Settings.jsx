@@ -3,6 +3,7 @@ import "./../../public/styles.css";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
+import axios from "axios";
 
 function Settings() {
   const { user, loadingUser, logout } = useContext(UserContext);
@@ -30,26 +31,36 @@ function Settings() {
     const password = formData.confirmPassword;
 
     try {
-      const res = await fetch("/api/user/email", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+      const response = await axios.put(
+        "/api/user/email",
+        {
+          password,
+          newEmail,
         },
-        credentials: "include",
-        body: JSON.stringify({ password, newEmail }),
-      });
+        {
+          withCredentials: true,
+        }
+      );
 
-      const data = await res.json();
-
-      if (res.ok && data.success) {
+      if (response.data.success) {
         window.location.reload();
       } else {
         alert(data.message || "Error during e-mail update process");
       }
     } catch (err) {
-      console.error("Network or server error:", err);
-      alert("Problem with server connection.");
+      if (err.response) {
+        if (err.response.status >= 500) {
+          console.error("Server error:", err);
+          alert("Server error. Please try again later.");
+        } else {
+          alert(
+            err.response.data?.message || "Error during e-mail update process"
+          );
+        }
+      } else {
+        console.error("Network or server error:", err);
+        alert("Problem with server connection.");
+      }
     }
   }
 
@@ -60,26 +71,36 @@ function Settings() {
     const newPassword = formData.newPassword;
 
     try {
-      const res = await fetch("/api/user/password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+      const response = await axios.put(
+        "/api/user/password",
+        {
+          oldPassword,
+          newPassword,
         },
-        credentials: "include",
-        body: JSON.stringify({ oldPassword, newPassword }),
-      });
+        {
+          withCredentials: true,
+        }
+      );
 
-      const data = await res.json();
-
-      if (res.ok && data.success) {
+      if (response.data.success) {
         window.location.reload();
       } else {
-        alert(data.message || "Error during password update process");
+        alert(response.data.message || "Error during password update process");
       }
     } catch (err) {
-      console.error("Network or server error:", err);
-      alert("Problem with server connection.");
+      if (err.response) {
+        if (err.response.status >= 500) {
+          console.error("Server error:", err);
+          alert("Server error. Please try again later.");
+        } else {
+          alert(
+            err.response.data?.message || "Error during password update process"
+          );
+        }
+      } else {
+        console.error("Network or server error:", err);
+        alert("Problem with server connection.");
+      }
     }
   }
 
@@ -90,23 +111,29 @@ function Settings() {
       return;
 
     try {
-      const res = await fetch("/api/user", {
-        method: "DELETE",
-        credentials: "include",
+      const response = await axios.delete("/api/user", {
+        withCredentials: true,
       });
 
-      const data = await res.json();
-
-      if (data.success) {
+      if (response.data.success) {
         alert(`Your account: ${user.email} was successfully deleted.`);
         logout();
         navigate("/");
       } else {
-        alert(data.message);
+        alert(response.data.message || "Error during account deletion.");
       }
     } catch (err) {
-      console.error("Network or server error:", err);
-      alert("Problem with server connection.");
+      if (err.response) {
+        if (err.response.status >= 500) {
+          console.error("Server error:", err);
+          alert("Server error. Please try again later.");
+        } else {
+          alert(err.response.data?.message || "Error during account deletion.");
+        }
+      } else {
+        console.error("Network or server error:", err);
+        alert("Problem with server connection.");
+      }
     }
   }
 
