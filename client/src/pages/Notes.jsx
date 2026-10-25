@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
+import axios from "axios";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
@@ -9,17 +10,29 @@ function Notes() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const notesRes = await fetch("/api/notes", {
-          headers: { Accept: "application/json" },
-          credentials: "include",
-        });
-        const notesData = await notesRes.json();
+        // const notesRes = await fetch("/api/notes", {
+        //   headers: { Accept: "application/json" },
+        //   credentials: "include",
+        // });
+        // const notesData = await notesRes.json();
 
-        if (notesData.success && Array.isArray(notesData.data)) {
-          setNotes(notesData.data);
+        const response  = await axios.get("/api/notes", { withCredentials: true });
+
+        // if (notesData.success && Array.isArray(notesData.data)) {
+        //   setNotes(notesData.data);
+        // }
+        if (response.data.success && Array.isArray(response.data.data)) {
+          setNotes(response.data.data);
+        } else {
+          console.error("Invalid response data:", response.data);
         }
+
       } catch (err) {
-        console.error("Fetching data error:", err);
+        if (err.response) {
+          console.error("Server error while fetching notes:", err.response);
+        } else {
+          console.error("Fetching data error:", err);
+        }
       } finally {
         setLoading(false);
       }
@@ -29,24 +42,42 @@ function Notes() {
   }, []);
 
   async function addNote(newNote) {
-    const res = await fetch("/api/notes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(newNote),
-    });
 
-    const result = await res.json();
+    // const res = await fetch("/api/notes", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Accept: "application/json",
+    //   },
+    //   credentials: "include",
+    //   body: JSON.stringify(newNote),
+    // });
 
-    if (!res.ok || !result.success) {
-      throw new Error(result.message || "Error during adding new note");
-    }
+    // const result = await res.json();
+    try{
 
-    const savedNote = result.data || newNote;
+    const response = await axios.post("/api/notes", newNote, { withCredentials: true });
+
+    // if (!res.ok || !result.success) {
+    //   throw new Error(result.message || "Error during adding new note");
+    // }
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Error during adding new note");
+    } 
+
+    //const savedNote = result.data || newNote;
+    const savedNote = response.data.data || newNote;
     setNotes((prevNotes) => [savedNote, ...prevNotes]);
+
+    } catch (err) {
+      if (err.response) {
+        console.error("Server error during adding new note:", err.response);
+        alert(err.response.data?.message || "Server error during adding new note");
+      } else {
+        console.error("Adding note error:", err);
+        alert(err.message || "Problem with connection or adding note.");
+    }
+    }
   }
 
   async function deleteNote(noteId) {
