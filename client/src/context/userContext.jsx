@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const UserContext = createContext(null);
 
@@ -10,25 +11,23 @@ export function UserProvider({ children }) {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/user", { credentials: "include" });
+      const response = await axios.get("/api/user", { withCredentials: true });
 
-      if (res.status === 401) {
+      if (response.data.success) {
+        setUser(response.data.data);
+      } else {
         setUser(null);
-        return;
       }
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          setUser(data.data);
-          return;
-        }
-      }
-
-      setUser(null);
     } catch (err) {
-      console.error("Błąd połączenia z serwerem podczas autoryzacji:", err);
-      setUser(null);
+      if (err.response && err.response.status === 401) {
+        setUser(null);
+      } else {
+        console.error("Server connection error during authorisation:", err);
+        alert(
+          "Server connection error during authorisation. Please try again later."
+        );
+        setUser(null);
+      }
     } finally {
       setLoadingUser(false);
     }
@@ -40,7 +39,7 @@ export function UserProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/logout", { method: "POST", credentials: "include" });
+      await axios.post("/api/logout", {}, { withCredentials: true });
     } catch (err) {
       console.error("User logout on server error:", err);
     } finally {
