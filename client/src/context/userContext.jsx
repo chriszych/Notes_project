@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UserContext = createContext(null);
 
@@ -8,6 +9,8 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const fetchUser = async () => {
     try {
@@ -44,6 +47,7 @@ export function UserProvider({ children }) {
       console.error("User logout on server error:", err);
     } finally {
       setUser(null);
+      queryClient.clear();
       navigate("/");
     }
   };

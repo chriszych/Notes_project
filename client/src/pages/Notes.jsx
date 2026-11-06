@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { UserContext } from "../context/userContext";
+
 
 function Notes() {
+
+  const { user } = useContext(UserContext);
 
   const {
     data: notes=[],
@@ -12,7 +16,8 @@ function Notes() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["notes"],
+    queryKey: ["notes", user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const response = await axios.get("/api/notes", {
         withCredentials: true,
@@ -32,7 +37,6 @@ function Notes() {
     },
   });
 
-  console.log("Notes data:", notes);
 
   async function addNote(newNote) {
     try {
