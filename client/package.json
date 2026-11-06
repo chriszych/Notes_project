@@ -14,10 +14,12 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.11",
     "@mui/material": "^5.15.11",
+    "@tanstack/react-query": "^5.106.1",
     "axios": "^1.20.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.14.1"
+    "react-router-dom": "^7.14.1",
+    "tanstack": "^2.0.3"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.3.0",
@@ -27,5 +29,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "vite": "^7.3.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }

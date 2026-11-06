@@ -2,36 +2,37 @@ import React, { useState, useEffect } from "react";
 import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 function Notes() {
-  const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get("/api/notes", {
-          withCredentials: true,
-        });
+  const {
+    data: notes=[],
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["notes"],
+    queryFn: async () => {
+      const response = await axios.get("/api/notes", {
+        withCredentials: true,
+      });
 
-        if (response.data.success && Array.isArray(response.data.data)) {
-          setNotes(response.data.data);
-        } else {
-          console.error("Invalid response data:", response.data);
-        }
-      } catch (err) {
-        if (err.response) {
-          console.error("Server error while fetching notes:", err.response);
-        } else {
-          console.error("Fetching data error:", err);
-        }
-      } finally {
-        setLoading(false);
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during fetching notes from server"
+        );
       }
+
+      if (!Array.isArray(response.data.data)) {
+      throw new Error("Received invalid data format from server");
     }
 
-    fetchData();
-  }, []);
+      return response.data.data || [];
+    },
+  });
+
+  console.log("Notes data:", notes);
 
   async function addNote(newNote) {
     try {
@@ -115,7 +116,8 @@ function Notes() {
     }
   }
 
-  if (loading) {
+  // if (loading) {
+  if (isPending) {
     return <div className="text-center mt-5">Loading notes...</div>;
   }
 
