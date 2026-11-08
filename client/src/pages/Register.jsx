@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 function Register() {
   const navigate = useNavigate();
@@ -10,13 +11,9 @@ function Register() {
     password: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    setErrorMessage("");
-    setSuccessMessage("");
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -28,47 +25,42 @@ function Register() {
     navigate("/");
   }
 
-  async function handleRegisterClick(e) {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    try {
+  const {
+    mutate: registerUserMutation,
+    isPending,
+    isError,
+    error,
+    isSuccess,
+  } = useMutation({
+    mutationFn: async ({ username, password }) => {
       const response = await axios.post(
         "/api/register",
-        {
-          username: formData.email,
-          password: formData.password,
-        },
-        {
-          withCredentials: true,
-        }
+        { username, password },
+        { withCredentials: true }
       );
 
-      if (response.data.success) {
-        setFormData({ email: "", password: "" });
-        setSuccessMessage(response.data.message || "User added, try login");
-        return;
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Error during registration");
       }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status >= 500) {
-          console.error("Register server error:", err);
-          setErrorMessage("Server error. Please try again later.");
-        } else {
-          setFormData((prev) => ({ ...prev, password: "" }));
-          setErrorMessage(
-            err.response.data?.message || "Error during registration."
-          );
-        }
-      } else {
-        console.error("Register request error:", err);
-        setErrorMessage("Server connection error.");
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setFormData({ email: "", password: "" });
+      setSuccessMessage(data.message || "User added, try login");
+    },
+    onError: (err) => {
+      setFormData((prev) => ({ ...prev, password: "" }));
+    },
+  });
+
+  async function handleRegisterClick(e) {
+    e.preventDefault();
+
+    registerUserMutation({
+      username: formData.email,
+      password: formData.password,
+    });
   }
 
   return (
@@ -95,15 +87,15 @@ function Register() {
           onChange={handleChange}
         />
 
-        {errorMessage && (
+        {isError && (
           <div
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {errorMessage}
+            {error.message || "Error during registration."}
           </div>
         )}
-        {successMessage && (
+        {isSuccess && successMessage && (
           <div
             className="error-alert"
             style={{ color: "green", marginBottom: "15px", fontSize: "14px" }}
@@ -113,8 +105,8 @@ function Register() {
         )}
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button type="submit" style={{ flex: 1 }} disabled={isSubmitting}>
-            {isSubmitting ? "Registering..." : "Register"}
+          <button type="submit" style={{ flex: 1 }} disabled={isPending}>
+            {isPending ? "Registering..." : "Register"}
           </button>
           <button type="button" style={{ flex: 1 }} onClick={handleLoginClick}>
             Login
