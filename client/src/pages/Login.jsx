@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,11 +12,33 @@ function Login() {
     password: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    mutate: LoginUserMutation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ username, password }) => {
+      const response = await axios.post(
+        "/api/login",
+        { username, password },
+        { withCredentials: true }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Błąd logowania");
+      }
+
+      return response.data;
+    },
+
+    onSuccess: async (userdata) => {
+      await fetchUser();
+      navigate("/notes");
+    },
+  });
 
   const handleChange = (e) => {
-    setErrorMessage("");
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -25,45 +48,10 @@ function Login() {
 
   async function handleLoginClick(e) {
     e.preventDefault();
-
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await axios.post(
-        "/api/login",
-        {
-          username: formData.email,
-          password: formData.password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (response.data.success) {
-        await fetchUser();
-        navigate("/notes");
-      }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status >= 500) {
-          console.error("Login server error:", err);
-          setErrorMessage("Server error. Please try again later.");
-        } else {
-          setErrorMessage(
-            err.response.data?.message || "Invalid email or password."
-          );
-        }
-      } else {
-        setErrorMessage(
-          "Could not connect to the server. Check your connection."
-        );
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    LoginUserMutation({
+      username: formData.email,
+      password: formData.password,
+    });
   }
 
   function handleRegisterClick() {
@@ -94,24 +82,24 @@ function Login() {
           onChange={handleChange}
         />
 
-        {errorMessage && (
+         {isError && (
           <div
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {errorMessage}
+            {error?.message || "Błąd logowania"}
           </div>
         )}
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button type="submit" style={{ flex: 1 }} disabled={isSubmitting}>
-            {isSubmitting ? "Logging in..." : "Login"}
+            <button type="submit" style={{ flex: 1 }} disabled={isPending}>
+            {isPending ? "Logging in..." : "Login"}
           </button>
           <button
             type="button"
             style={{ flex: 1 }}
             onClick={handleRegisterClick}
-            disabled={isSubmitting}
+            disabled={isPending}
           >
             Register
           </button>

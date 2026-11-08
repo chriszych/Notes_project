@@ -9,15 +9,15 @@ const root = createRoot(container);
 const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
-      onError: (error) => {
+      onError: (err) => {
          if (err.response) {
-          console.error("Server error during note opration:", err.response);
+          console.error("Server error during data opration:", err.response);
           alert(
-            err.response.data?.message || "Server error during note operation"
+            err.response.data?.message || "Server error during data operation"
           );
         } else {
-          console.error("Note operating error:", err);
-          alert(err.message || "Problem with connection or note operation.");
+          console.error("Data operating error:", err);
+          alert(err.message || "Problem with connection or data operation.");
         }
       },
     },

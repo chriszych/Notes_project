@@ -67,7 +67,6 @@ function Notes() {
           response.data.message || "Error during deleting note from server"
         );
       }
-
       return noteId;
     },
     onSuccess: () =>
