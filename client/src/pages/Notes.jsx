@@ -36,145 +36,73 @@ function Notes() {
     },
   });
 
-    const AddNoteMutation = useMutation({
-      mutationFn: async (newNote) => {
-        const response = await axios.post("/api/notes", newNote, {
-          withCredentials: true,
-        });
+  const AddNoteMutation = useMutation({
+    mutationFn: async (newNote) => {
+      const response = await axios.post("/api/notes", newNote, {
+        withCredentials: true,
+      });
 
-        if (!response.data.success) {
-          throw new Error(
-            response.data.message || "Error during adding note to server"
-          );
-        }
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during adding note to server"
+        );
+      }
 
-        return response.data.data;
-      },
-      // onSuccess: (addedNote) => {
-      //   setNotes((prevNotes) => [addedNote, ...prevNotes]);
-      onSuccess: () => queryClient.invalidateQueries({
+      return response.data.data;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
         queryKey: ["notes", user?.id],
       }),
-      //},
-      onError: (err) => {
-        if (err.response) {
-          console.error("Server error during adding note:", err.response);
-          alert(
-            err.response.data?.message || "Server error during adding note"
-          );
-        } else {
-          console.error("Adding note error:", err);
-          alert(err.message || "Problem with connection or adding note.");
-        }
-      },
-    });
+  });
 
-    const DeleteNoteMutation = useMutation({
-      mutationFn: async (noteId) => {
-        const response = await axios.delete(`/api/notes/${noteId}`, {
-          withCredentials: true,
-        });
+  const DeleteNoteMutation = useMutation({
+    mutationFn: async (noteId) => {
+      const response = await axios.delete(`/api/notes/${noteId}`, {
+        withCredentials: true,
+      });
 
-        if (!response.data.success) {
-          throw new Error(
-            response.data.message || "Error during deleting note from server"
-          );
-        }
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during deleting note from server"
+        );
+      }
 
-        return noteId;
-      },
-      onSuccess: () => queryClient.invalidateQueries({
+      return noteId;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
         queryKey: ["notes", user?.id],
       }),
-      onError: (err) => {
-        if (err.response) {
-          console.error("Server error during deleting note:", err.response);
-          alert(
-            err.response.data?.message || "Server error during deleting note"
-          );
-        } else {
-          console.error("Deleting note error:", err);
-          alert(err.message || "Problem with connection or deleting note.");
-        }
-      },
+  });
 
-    });
+  const UpdateNoteMutation = useMutation({
+    mutationFn: async ({ noteId, updatedNote }) => {
+      const response = await axios.put(`/api/notes/${noteId}`, updatedNote, {
+        withCredentials: true,
+      });
 
-    const UpdateNoteMutation = useMutation({
-      mutationFn: async ({ noteId, updatedNote }) => {
-        const response = await axios.put(`/api/notes/${noteId}`, updatedNote, {
-          withCredentials: true,
-        });
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during updating note on server"
+        );
+      }
 
-        if (!response.data.success) {
-          throw new Error(
-            response.data.message || "Error during updating note on server"
-          );
-        }
-
-        return response.data.data;
-      },
-      onSuccess: () => queryClient.invalidateQueries({
+      return response.data.data;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
         queryKey: ["notes", user?.id],
       }),
-      onError: (err) => {
-        if (err.response) {
-          console.error("Server error during updating note:", err.response);
-          alert(
-            err.response.data?.message || "Server error during updating note"
-          );
-        } else {
-          console.error("Updating note error:", err);
-          alert(err.message || "Problem with connection or updating note.");
-        }
-      },
-    });
+  });
 
-  async function addNote(newNote) {
-    AddNoteMutation.mutate(newNote);
-  }
-
-  async function deleteNote(noteId) {
-    if (!window.confirm("Are you sure to delete this note ?")) return;
-    DeleteNoteMutation.mutate(noteId);
-  }
-
-  async function saveNote(noteId, updatedNote) {
-    UpdateNoteMutation.mutate({ noteId, updatedNote });
-    // try {
-    //   const response = await axios.put(`/api/notes/${noteId}`, updatedNote, {
-    //     withCredentials: true,
-    //   });
-
-    //   if (!response.data.success) {
-    //     throw new Error(
-    //       response.data.message || "Error during modyfing note on server"
-    //     );
-    //   }
-
-    //   setNotes((prev) => [
-    //     response.data.data,
-    //     ...prev.filter((note) => note.id !== noteId),
-    //   ]);
-    // } catch (err) {
-    //   if (err.response) {
-    //     console.error("Server error during saving note:", err.response);
-    //     alert(err.response.data?.message || "Server error during saving note");
-    //   } else {
-    //     console.error("Saving note error:", err);
-    //     alert(err.message || "Problem with connection or saving note.");
-    //   }
-    // }
-  }
-
-  // if (loading) {
   if (isPending) {
     return <div className="text-center mt-5">Loading notes...</div>;
   }
 
   return (
     <div>
-      <CreateArea onAdd={addNote} />
+      <CreateArea onAdd={async (newNote) => AddNoteMutation.mutate(newNote)} />
 
       <div className="notes-container">
         {notes.length === 0 ? (
@@ -187,8 +115,14 @@ function Notes() {
               content={noteItem.content || noteItem.text}
               createdAt={new Date(noteItem.createdAt).toLocaleString("pl-PL")}
               updatedAt={new Date(noteItem.updatedAt).toLocaleString("pl-PL")}
-              onDelete={() => deleteNote(noteItem.id)}
-              onSave={(updatedNote) => saveNote(noteItem.id, updatedNote)}
+              onDelete={async () => {
+                if (!window.confirm("Are you sure to delete this note ?"))
+                  return;
+                DeleteNoteMutation.mutate(noteItem.id);
+              }}
+              onSave={async (updatedNote) =>
+                UpdateNoteMutation.mutate({ noteId: noteItem.id, updatedNote })
+              }
             />
           ))
         )}
