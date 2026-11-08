@@ -27,6 +27,7 @@ export async function createNote(req, res) {
   const { title, content } = req.body;
 
   if (title === undefined || content === undefined) {
+    console.log("Title or content is missing in the request body");
     return res.status(400).json({
       success: false,
       message: "Title and content are required!",
@@ -39,6 +40,7 @@ export async function createNote(req, res) {
   );
 
   if (!result.rowCount) {
+    console.log("Error adding the note to the database");
     return res.status(400).json({
       success: false,
       message: "Error adding the note!",
@@ -68,6 +70,7 @@ export async function updateNote(req, res) {
   const { title, content } = req.body;
 
   if (isNaN(noteId)) {
+    console.log("Invalid note ID:", req.params.id);
     return res.status(400).json({
       success: false,
       message: "Invalid note ID",
@@ -75,6 +78,7 @@ export async function updateNote(req, res) {
   }
 
   if (title === undefined || content === undefined) {
+    console.log("Title or content is missing in the request body");
     return res.status(400).json({
       success: false,
       message: "Title and content are required!",
@@ -87,6 +91,7 @@ export async function updateNote(req, res) {
   );
 
   if (!result.rowCount) {
+    console.log("Note not found or does not belong to the user:", noteId);
     return res.status(404).json({
       success: false,
       message: "Note not found!",
@@ -115,6 +120,7 @@ export async function deleteNote(req, res) {
   const noteId = Number(req.params.id);
 
   if (isNaN(noteId)) {
+    console.log("Invalid note ID:", req.params.id);
     return res.status(400).json({
       success: false,
       message: "Invalid note ID",
@@ -127,6 +133,7 @@ export async function deleteNote(req, res) {
   );
 
   if (!result.rowCount) {
+    console.log("Note not found or does not belong to the user:", noteId);
     return res.status(404).json({
       success: false,
       message: "Note not found!",
