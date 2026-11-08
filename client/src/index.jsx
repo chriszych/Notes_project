@@ -13,11 +13,11 @@ const queryClient = new QueryClient({
         if (err.response) {
           console.error(
             `Server error [${err.response.status}]:`,
-            err.response.data?.message || "Server error during data operation"
+            "Server error during data operation"
           );
 
           alert(
-            err.response.data?.message || "Server error during data operation"
+            "Server error during data operation"
           );
         } else {
           console.error("Data operating error:", err.message);
