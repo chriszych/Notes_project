@@ -10,13 +10,17 @@ const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
       onError: (err) => {
-         if (err.response) {
-          console.error("Server error during data opration:", err.response);
+        if (err.response) {
+          console.error(
+            `Server error [${err.response.status}]:`,
+            err.response.data?.message || "Server error during data operation"
+          );
+
           alert(
             err.response.data?.message || "Server error during data operation"
           );
         } else {
-          console.error("Data operating error:", err);
+          console.error("Data operating error:", err.message);
           alert(err.message || "Problem with connection or data operation.");
         }
       },
