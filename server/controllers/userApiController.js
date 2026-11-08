@@ -9,6 +9,7 @@ export async function addUser(req, res) {
   const password = req.body.password;
 
   if (!email || !password) {
+    console.log("Email and password are required");
     return res.status(400).json({
       success: false,
       message: "Email and password are required",
@@ -16,6 +17,7 @@ export async function addUser(req, res) {
   }
 
   if (password.length < 8) {
+    console.log("Password must be at least 8 characters");
     return res.status(400).json({
       success: false,
       message: "Password must be at least 8 characters",
@@ -26,6 +28,7 @@ export async function addUser(req, res) {
     email,
   ]);
   if (checkResult.rows.length > 0) {
+    console.log("Email already exists. Try logging in.");
     return res.status(409).json({
       success: false,
       message: "Email already exists. Try logging in.",
@@ -41,7 +44,7 @@ export async function addUser(req, res) {
 
   return res.status(201).json({
     success: true,
-    message: "User created successfully",
+    message: "User created successfully, try login",
   });
 }
 
@@ -61,6 +64,7 @@ export async function loginUser(req, res) {
   const user = result.rows[0];
 
   if (!user) {
+    console.log("User name not found");
     return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
   }
 
@@ -70,6 +74,7 @@ export async function loginUser(req, res) {
     user && (await bcrypt.compare(loginPassword, storedHashedPassword));
 
   if (!match) {
+    console.log("Password does not match");
     return res.status(401).json(INVALID_CREDENTIALS_MESSAGE);
   }
 
@@ -102,6 +107,7 @@ export async function getUserData(req, res) {
   );
 
   if (result.rows.length === 0) {
+    console.log("User not found");
     return res.status(404).json({
       success: false,
       message: "User not found",
@@ -124,6 +130,7 @@ export async function deleteUser(req, res) {
   );
 
   if (result.rowCount === 0) {
+    console.log("User not found");
     return res.status(404).json({
       success: false,
       message: "User not found",
@@ -146,6 +153,7 @@ export async function updatePassword(req, res) {
   ]);
 
   if (result.rows.length === 0) {
+    console.log("User not found");
     return res.status(404).json({
       success: false,
       message: "User not found",
@@ -157,6 +165,7 @@ export async function updatePassword(req, res) {
   const match = await bcrypt.compare(oldPassword, storedHash);
 
   if (!match) {
+    console.log("Incorrect old password");
     return res.status(403).json({
       success: false,
       message: "Incorrect old password",
@@ -182,6 +191,7 @@ export async function updateEmail(req, res) {
   const { password, newEmail } = req.body;
 
   if (password === undefined || newEmail === undefined) {
+    console.log("e-mail and password are required!");
     return res.status(400).json({
       success: false,
       message: "e-mail and password are required!",
@@ -193,6 +203,7 @@ export async function updateEmail(req, res) {
   ]);
 
   if (result.rows.length === 0) {
+    console.log("User not found");
     return res.status(404).json({
       success: false,
       message: "User not found",
@@ -203,6 +214,7 @@ export async function updateEmail(req, res) {
   const match = await bcrypt.compare(password, storedHash);
 
   if (!match) {
+    console.log("Incorrect old password");
     return res.status(403).json({
       success: false,
       message: "Incorrect old password",
