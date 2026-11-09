@@ -1,13 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { Fab, Zoom, CircularProgress } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserContext } from "../context/userContext";
+import axios from "axios";
 
-function CreateArea(props) {
+function CreateArea() {
+  const { user } = useContext(UserContext);
   const [isExpanded, setExpanded] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
   const [note, setNote] = useState({
     title: "",
     content: "",
+  });
+
+  const {
+    mutate: addNote,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async (newNote) => {
+      const response = await axios.post("/api/notes", newNote, {
+        withCredentials: true,
+      });
+
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during adding note to server"
+        );
+      }
+
+      return response.data.data;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["notes", user?.id],
+      }),
+    onError: (error) => {
+      console.error("Error during adding note:", error);
+      alert("Error during adding note: " + error.message);
+    },
+    onSettled: () => {
+      setNote({
+        title: "",
+        content: "",
+      });
+      setExpanded(false);
+    },
   });
 
   function handleChange(event) {
@@ -27,26 +67,10 @@ function CreateArea(props) {
     if (!note.title.trim() && !note.content.trim()) {
       return;
     }
-
-    try {
-      setIsSubmitting(true);
-
-      await props.onAdd({
-        title: note.title.trim(),
-        content: note.content.trim(),
-      });
-
-      setNote({
-        title: "",
-        content: "",
-      });
-
-      setExpanded(false);
-    } catch (err) {
-      console.error("Error during note adding:", err);
-    } finally {
-      setIsSubmitting(false);
-    }
+    addNote({
+      title: note.title.trim(),
+      content: note.content.trim(),
+    });
   }
 
   function expand() {
@@ -62,7 +86,7 @@ function CreateArea(props) {
             onChange={handleChange}
             value={note.title}
             placeholder="Title"
-            disabled={isSubmitting}
+            disabled={isPending}
           />
         )}
 
@@ -73,11 +97,11 @@ function CreateArea(props) {
           value={note.content}
           placeholder="Take a note..."
           rows={isExpanded ? 3 : 1}
-          disabled={isSubmitting}
+          disabled={isPending}
         />
         <Zoom in={isExpanded}>
-          <Fab type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Fab type="submit" disabled={isPending}>
+            {isPending ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
               <AddIcon />

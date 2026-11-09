@@ -36,25 +36,25 @@ function Notes() {
     },
   });
 
-  const AddNoteMutation = useMutation({
-    mutationFn: async (newNote) => {
-      const response = await axios.post("/api/notes", newNote, {
-        withCredentials: true,
-      });
+  // const AddNoteMutation = useMutation({
+  //   mutationFn: async (newNote) => {
+  //     const response = await axios.post("/api/notes", newNote, {
+  //       withCredentials: true,
+  //     });
 
-      if (!response.data.success) {
-        throw new Error(
-          response.data.message || "Error during adding note to server"
-        );
-      }
+  //     if (!response.data.success) {
+  //       throw new Error(
+  //         response.data.message || "Error during adding note to server"
+  //       );
+  //     }
 
-      return response.data.data;
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["notes", user?.id],
-      }),
-  });
+  //     return response.data.data;
+  //   },
+  //   onSuccess: () =>
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["notes", user?.id],
+  //     }),
+  // });
 
   const DeleteNoteMutation = useMutation({
     mutationFn: async (noteId) => {
@@ -101,7 +101,8 @@ function Notes() {
 
   return (
     <div>
-      <CreateArea onAdd={async (newNote) => AddNoteMutation.mutate(newNote)} />
+      <CreateArea />
+       {/* <CreateArea onAdd={async (newNote) => AddNoteMutation.mutate(newNote)} /> */}
 
       <div className="notes-container">
         {notes.length === 0 ? (
