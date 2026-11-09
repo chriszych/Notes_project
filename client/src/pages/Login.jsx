@@ -1,12 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/userContext";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Login() {
   const navigate = useNavigate();
-  const { fetchUser } = useContext(UserContext);
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -32,8 +31,8 @@ function Login() {
       return response.data;
     },
 
-    onSuccess: async (userdata) => {
-      await fetchUser();
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/notes");
     },
   });
@@ -82,7 +81,7 @@ function Login() {
           onChange={handleChange}
         />
 
-         {isError && (
+        {isError && (
           <div
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
@@ -92,7 +91,7 @@ function Login() {
         )}
 
         <div style={{ display: "flex", gap: "10px" }}>
-            <button type="submit" style={{ flex: 1 }} disabled={isPending}>
+          <button type="submit" style={{ flex: 1 }} disabled={isPending}>
             {isPending ? "Logging in..." : "Login"}
           </button>
           <button

@@ -1,60 +1,62 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 export const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loadingUser, setLoadingUser] = useState(true);
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
-  const fetchUser = async () => {
-    try {
+  const {
+    data: user,
+    isPending: loadingUser,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
       const response = await axios.get("/api/user", { withCredentials: true });
-
       if (response.data.success) {
-        setUser(response.data.data);
-      } else {
-        setUser(null);
+        return response.data.data;
       }
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setUser(null);
-      } else {
-        console.error("Server connection error during authorisation:", err);
-        alert(
-          "Server connection error during authorisation. Please try again later."
-        );
-        setUser(null);
+      return null;
+    },
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { mutate: logout, isPending: unLoadingUser } = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        "/api/logout",
+        {},
+        { withCredentials: true }
+      );
+      if (!response.data.success) {
+        throw new Error("Failed to log out");
       }
-    } finally {
-      setLoadingUser(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const logout = async () => {
-    try {
-      await axios.post("/api/logout", {}, { withCredentials: true });
-    } catch (err) {
-      console.error("User logout on server error:", err);
-    } finally {
-      setUser(null);
+      return response.data;
+    },
+    onSuccess: () => {
       queryClient.clear();
       navigate("/");
-    }
-  };
+    },
+    onError: (error) => {
+      console.error("User logout on server error:", error);
+    },
+  });
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, loadingUser, logout, fetchUser }}
+      value={{
+        user: isError ? null : user,
+        loadingUser,
+        logout,
+        unLoadingUser,
+      }}
     >
       {children}
     </UserContext.Provider>
