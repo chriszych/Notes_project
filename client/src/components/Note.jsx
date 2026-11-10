@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserContext } from "../context/userContext";
+import { updateNote } from "../../../server/controllers/noteApiController";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -6,25 +9,66 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CircularProgress from "@mui/material/CircularProgress";
 
 function Note(props) {
+  const { user } = useContext(UserContext);
+  const queryClient = useQueryClient();
+
   const [isEdited, setIsEdited] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [editedTitle, setEditedTitle] = useState(props.title);
   const [editedContent, setEditedContent] = useState(props.content);
 
-  async function handleDeleteClick() {
+  const { mutate: onDelete, isPending: isDeleting } = useMutation({
+    mutationFn: async (noteId) => {
+      const response = await axios.delete(`/api/notes/${noteId}`, {
+        withCredentials: true,
+      });
 
-    try {
-      setIsSubmitting(true);
-      setErrorMessage("");
-      await props.onDelete(props.id);
-    } catch (err) {
-      console.error("Error during note deletion:", err);
-      setErrorMessage(err?.message || "Error during note deletion");
-    } finally {
-      setIsSubmitting(false);
-    }
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during deleting note from server"
+        );
+      }
+      return noteId;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["notes", user?.id],
+      }),
+    onError: (error) => {
+      setErrorMessage(error?.message || "Error during note deletion");
+    },
+  });
+
+  const { mutate: onUpdate, isPending: isUpdating } = useMutation({
+    mutationFn: async ({ noteId, updatedNote }) => {
+      const response = await axios.put(`/api/notes/${noteId}`, updatedNote, {
+        withCredentials: true,
+      });
+
+      if (!response.data.success) {
+        throw new Error(
+          response.data.message || "Error during updating note on server"
+        );
+      }
+
+      return response.data.data;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["notes", user?.id],
+      }),
+    onError: (error) => {
+      setErrorMessage(error?.message || "Error during note update");
+    },
+  });
+
+  const isSubmitting = isUpdating || isDeleting;
+
+  async function handleDeleteClick() {
+    if (!window.confirm("Are you sure to delete this note?")) return;
+    setErrorMessage("");
+    deleteNote(props.id);
   }
 
   function handleEditClick() {
@@ -37,20 +81,14 @@ function Note(props) {
       setErrorMessage("Note cannot be empty.");
       return;
     }
-    try {
-      setIsSubmitting(true);
-      setErrorMessage("");
-      await props.onSave({
+    setErrorMessage("");
+    updateNote({
+      noteId: props.id,
+      updatedNote: {
         title: editedTitle.trim(),
         content: editedContent.trim(),
-      });
-      setIsEdited(false);
-    } catch (err) {
-      console.error("Error during note saving:", err);
-      setErrorMessage(err?.message || "Error during note saving");
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+    });
   }
 
   function handleCancelClick() {
