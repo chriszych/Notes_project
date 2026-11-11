@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
 import axios from "axios";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 function Settings() {
+
+  const queryClient = useQueryClient();
+
   const { user, loadingUser, logout } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -30,39 +34,59 @@ function Settings() {
     const newEmail = formData.newEmail;
     const password = formData.confirmPassword;
 
-    try {
-      const response = await axios.put(
-        "/api/user/email",
-        {
-          password,
-          newEmail,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (response.data.success) {
+    const { mutate: updateEmailMutation } = useMutation({
+      mutationFn: async () => {
+        const response = await axios.put(
+          "/api/user/email",
+          {
+            password,
+            newEmail,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["user"] });
         window.location.reload();
-      } else {
-        alert(data.message || "Error during e-mail update process");
-      }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status >= 500) {
-          console.error("Server error:", err);
-          alert("Server error. Please try again later.");
-        } else {
-          alert(
-            err.response.data?.message || "Error during e-mail update process"
-          );
-        }
-      } else {
-        console.error("Network or server error:", err);
-        alert("Problem with server connection.");
-      }
-    }
-  }
+      },
+    });
+
+  //   try {
+  //     const response = await axios.put(
+  //       "/api/user/email",
+  //       {
+  //         password,
+  //         newEmail,
+  //       },
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     );
+
+  //     if (response.data.success) {
+  //       window.location.reload();
+  //     } else {
+  //       alert(data.message || "Error during e-mail update process");
+  //     }
+  //   } catch (err) {
+  //     if (err.response) {
+  //       if (err.response.status >= 500) {
+  //         console.error("Server error:", err);
+  //         alert("Server error. Please try again later.");
+  //       } else {
+  //         alert(
+  //           err.response.data?.message || "Error during e-mail update process"
+  //         );
+  //       }
+  //     } else {
+  //       console.error("Network or server error:", err);
+  //       alert("Problem with server connection.");
+  //     }
+  //   }
+   }
 
   async function updatePassword(event) {
     event.preventDefault();
