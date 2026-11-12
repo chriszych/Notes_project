@@ -48,6 +48,26 @@ function Settings() {
       },
     });
 
+          const { mutate: updatePasswordMutation } = useMutation({
+      mutationFn: async ({oldPassword, newPassword}) => {
+        const response = await axios.put(
+          "/api/user/password",
+          {
+            oldPassword,
+            newPassword,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["user"] });
+        window.location.reload();
+      },
+    });
+
   async function updateEmail(event) {
     event.preventDefault();
 
@@ -97,41 +117,46 @@ function Settings() {
   async function updatePassword(event) {
     event.preventDefault();
 
-    const oldPassword = formData.oldPassword;
-    const newPassword = formData.newPassword;
+    // const oldPassword = formData.oldPassword;
+    // const newPassword = formData.newPassword;
 
-    try {
-      const response = await axios.put(
-        "/api/user/password",
-        {
-          oldPassword,
-          newPassword,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+        updatePasswordMutation({ 
+      oldPassword: formData.oldPassword, 
+      newPassword: formData.newPassword,
+    });
 
-      if (response.data.success) {
-        window.location.reload();
-      } else {
-        alert(response.data.message || "Error during password update process");
-      }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status >= 500) {
-          console.error("Server error:", err);
-          alert("Server error. Please try again later.");
-        } else {
-          alert(
-            err.response.data?.message || "Error during password update process"
-          );
-        }
-      } else {
-        console.error("Network or server error:", err);
-        alert("Problem with server connection.");
-      }
-    }
+    // try {
+    //   const response = await axios.put(
+    //     "/api/user/password",
+    //     {
+    //       oldPassword,
+    //       newPassword,
+    //     },
+    //     {
+    //       withCredentials: true,
+    //     }
+    //   );
+
+    //   if (response.data.success) {
+    //     window.location.reload();
+    //   } else {
+    //     alert(response.data.message || "Error during password update process");
+    //   }
+    // } catch (err) {
+    //   if (err.response) {
+    //     if (err.response.status >= 500) {
+    //       console.error("Server error:", err);
+    //       alert("Server error. Please try again later.");
+    //     } else {
+    //       alert(
+    //         err.response.data?.message || "Error during password update process"
+    //       );
+    //     }
+    //   } else {
+    //     console.error("Network or server error:", err);
+    //     alert("Problem with server connection.");
+    //   }
+    // }
   }
 
   async function deleteAccount() {
