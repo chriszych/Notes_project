@@ -28,14 +28,8 @@ function Settings() {
     }));
   };
 
-  async function updateEmail(event) {
-    event.preventDefault();
-
-    const newEmail = formData.newEmail;
-    const password = formData.confirmPassword;
-
-    const { mutate: updateEmailMutation } = useMutation({
-      mutationFn: async () => {
+      const { mutate: updateEmailMutation } = useMutation({
+      mutationFn: async ({password, newEmail}) => {
         const response = await axios.put(
           "/api/user/email",
           {
@@ -53,6 +47,18 @@ function Settings() {
         window.location.reload();
       },
     });
+
+  async function updateEmail(event) {
+    event.preventDefault();
+
+    //const newEmail = formData.newEmail;
+    //const password = formData.confirmPassword;
+    //console.log(password, newEmail);
+    updateEmailMutation({ 
+      password: formData.confirmPassword, 
+      newEmail: formData.newEmail
+    });
+
 
   //   try {
   //     const response = await axios.put(

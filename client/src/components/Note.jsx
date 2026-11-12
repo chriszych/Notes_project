@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../context/userContext";
-import { updateNote } from "../../../server/controllers/noteApiController";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -82,7 +81,7 @@ function Note(props) {
       return;
     }
     setErrorMessage("");
-    updateNote({
+    onUpdate({
       noteId: props.id,
       updatedNote: {
         title: editedTitle.trim(),
