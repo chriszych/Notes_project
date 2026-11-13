@@ -71,7 +71,6 @@ function Settings() {
     mutationFn: async () => {
       const response = await axios.delete(
         "/api/user",
-        {},
         { withCredentials: true },
       );
       return response.data;
@@ -230,7 +229,7 @@ function Settings() {
         <p style={{ marginBottom: "12px", color: "#666" }}>
           Deleting your account is permanent. You will lose all your notes.
         </p>
-        <button className="btn-danger-custom" onClick={deleteAccount}>
+        <button type="button" className="btn-danger-custom" onClick={deleteAccount}>
           Delete Account
         </button>
       </div>
