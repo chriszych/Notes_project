@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
 import axios from "axios";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Settings() {
-
   const queryClient = useQueryClient();
 
   const { user, loadingUser, logout } = useContext(UserContext);
@@ -28,135 +27,78 @@ function Settings() {
     }));
   };
 
-      const { mutate: updateEmailMutation } = useMutation({
-      mutationFn: async ({password, newEmail}) => {
-        const response = await axios.put(
-          "/api/user/email",
-          {
-            password,
-            newEmail,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        return response.data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["user"] });
-        window.location.reload();
-      },
-    });
+  const { mutate: updateEmailMutation } = useMutation({
+    mutationFn: async ({ password, newEmail }) => {
+      const response = await axios.put(
+        "/api/user/email",
+        {
+          password,
+          newEmail,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      window.location.reload();
+    },
+  });
 
-          const { mutate: updatePasswordMutation } = useMutation({
-      mutationFn: async ({oldPassword, newPassword}) => {
-        const response = await axios.put(
-          "/api/user/password",
-          {
-            oldPassword,
-            newPassword,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        return response.data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["user"] });
-        window.location.reload();
-      },
-    });
+  const { mutate: updatePasswordMutation } = useMutation({
+    mutationFn: async ({ oldPassword, newPassword }) => {
+      const response = await axios.put(
+        "/api/user/password",
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      window.location.reload();
+    },
+  });
+
+  const { mutate: deleteAccountMutation } = useMutation({
+    mutationFn: async () => {
+      const response = await axios.delete(
+        "/api/user",
+        {},
+        { withCredentials: true },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      alert(`Your account: ${user.email} was successfully deleted.`);
+      logout();
+      navigate("/");
+    },
+  });
 
   async function updateEmail(event) {
     event.preventDefault();
 
-    //const newEmail = formData.newEmail;
-    //const password = formData.confirmPassword;
-    //console.log(password, newEmail);
-    updateEmailMutation({ 
-      password: formData.confirmPassword, 
-      newEmail: formData.newEmail
+    updateEmailMutation({
+      password: formData.confirmPassword,
+      newEmail: formData.newEmail,
     });
-
-
-  //   try {
-  //     const response = await axios.put(
-  //       "/api/user/email",
-  //       {
-  //         password,
-  //         newEmail,
-  //       },
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-
-  //     if (response.data.success) {
-  //       window.location.reload();
-  //     } else {
-  //       alert(data.message || "Error during e-mail update process");
-  //     }
-  //   } catch (err) {
-  //     if (err.response) {
-  //       if (err.response.status >= 500) {
-  //         console.error("Server error:", err);
-  //         alert("Server error. Please try again later.");
-  //       } else {
-  //         alert(
-  //           err.response.data?.message || "Error during e-mail update process"
-  //         );
-  //       }
-  //     } else {
-  //       console.error("Network or server error:", err);
-  //       alert("Problem with server connection.");
-  //     }
-  //   }
-   }
+  }
 
   async function updatePassword(event) {
     event.preventDefault();
 
-    // const oldPassword = formData.oldPassword;
-    // const newPassword = formData.newPassword;
-
-        updatePasswordMutation({ 
-      oldPassword: formData.oldPassword, 
+    updatePasswordMutation({
+      oldPassword: formData.oldPassword,
       newPassword: formData.newPassword,
     });
-
-    // try {
-    //   const response = await axios.put(
-    //     "/api/user/password",
-    //     {
-    //       oldPassword,
-    //       newPassword,
-    //     },
-    //     {
-    //       withCredentials: true,
-    //     }
-    //   );
-
-    //   if (response.data.success) {
-    //     window.location.reload();
-    //   } else {
-    //     alert(response.data.message || "Error during password update process");
-    //   }
-    // } catch (err) {
-    //   if (err.response) {
-    //     if (err.response.status >= 500) {
-    //       console.error("Server error:", err);
-    //       alert("Server error. Please try again later.");
-    //     } else {
-    //       alert(
-    //         err.response.data?.message || "Error during password update process"
-    //       );
-    //     }
-    //   } else {
-    //     console.error("Network or server error:", err);
-    //     alert("Problem with server connection.");
-    //   }
-    // }
   }
 
   async function deleteAccount() {
@@ -165,31 +107,7 @@ function Settings() {
     )
       return;
 
-    try {
-      const response = await axios.delete("/api/user", {
-        withCredentials: true,
-      });
-
-      if (response.data.success) {
-        alert(`Your account: ${user.email} was successfully deleted.`);
-        logout();
-        navigate("/");
-      } else {
-        alert(response.data.message || "Error during account deletion.");
-      }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status >= 500) {
-          console.error("Server error:", err);
-          alert("Server error. Please try again later.");
-        } else {
-          alert(err.response.data?.message || "Error during account deletion.");
-        }
-      } else {
-        console.error("Network or server error:", err);
-        alert("Problem with server connection.");
-      }
-    }
+    deleteAccountMutation();
   }
 
   if (loadingUser) return null;
