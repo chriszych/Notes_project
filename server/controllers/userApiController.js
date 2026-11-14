@@ -49,7 +49,7 @@ export async function addUser(req, res) {
 }
 
 export async function loginUser(req, res) {
-  const email = req.body.username;
+  const email = req.body.username?.trim().toLowerCase();
   const loginPassword = req.body.password;
 
   const INVALID_CREDENTIALS_MESSAGE = {
@@ -188,7 +188,8 @@ export async function updatePassword(req, res) {
 export async function updateEmail(req, res) {
   const userId = req.user.id;
 
-  const { password, newEmail } = req.body;
+  const newEmail = req.body.username?.trim().toLowerCase();
+  const password = req.body.password;
 
   if (password === undefined || newEmail === undefined) {
     console.log("e-mail and password are required!");
