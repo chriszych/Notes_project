@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
@@ -92,7 +92,7 @@ function Register() {
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {error.message || "Error during registration."}
+            {error.response.data.message || "Error during registration."}
           </div>
         )}
         {isSuccess && successMessage && (

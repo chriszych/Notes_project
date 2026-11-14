@@ -54,7 +54,7 @@ export async function loginUser(req, res) {
 
   const INVALID_CREDENTIALS_MESSAGE = {
     success: false,
-    message: "Incorrect user or password",
+    message: "Incorrect username or password",
   };
   const result = await db.query(
     "SELECT id, email, password FROM users WHERE email = $1",

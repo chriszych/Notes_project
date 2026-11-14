@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ function Login() {
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.message || "Błąd logowania");
+        throw new Error(response.data.message || "Login error");
       }
 
       return response.data;
@@ -86,7 +86,8 @@ function Login() {
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {error?.message || "Błąd logowania"}
+            {error?.response.data.message || "Login error"}
+            {console.log(error.response.data.message)}
           </div>
         )}
 

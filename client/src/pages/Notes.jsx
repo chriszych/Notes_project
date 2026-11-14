@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Note from "../components/Note";
 import CreateArea from "../components/CreateArea";
 import axios from "axios";
