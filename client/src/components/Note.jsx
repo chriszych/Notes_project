@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
+import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserContext } from "../context/userContext";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -67,7 +68,7 @@ function Note(props) {
   async function handleDeleteClick() {
     if (!window.confirm("Are you sure to delete this note?")) return;
     setErrorMessage("");
-    deleteNote(props.id);
+    onDelete(props.id);
   }
 
   function handleEditClick() {
@@ -88,6 +89,7 @@ function Note(props) {
         content: editedContent.trim(),
       },
     });
+    setIsEdited(false);
   }
 
   function handleCancelClick() {
