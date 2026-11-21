@@ -1,0 +1,9 @@
+{
+  "name": "notes-monorepo",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ]
+}
