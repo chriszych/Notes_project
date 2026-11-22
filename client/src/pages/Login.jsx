@@ -1,14 +1,24 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginUserSchema } from "../../../shared/index.js";
 
 function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginUserSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const {
@@ -17,12 +27,10 @@ function Login() {
     isError,
     error,
   } = useMutation({
-    mutationFn: async ({ username, password }) => {
-      const response = await axios.post(
-        "/api/login",
-        { username, password },
-        { withCredentials: true }
-      );
+    mutationFn: async (credentials) => {
+      const response = await axios.post("/api/login", credentials, {
+        withCredentials: true,
+      });
 
       if (!response.data.success) {
         throw new Error(response.data.message || "Login error");
@@ -37,21 +45,12 @@ function Login() {
     },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  async function handleLoginClick(e) {
-    e.preventDefault();
+  const onSubmit = (data) => {
     LoginUserMutation({
-      username: formData.email,
-      password: formData.password,
+      username: data.email,
+      password: data.password,
     });
-  }
+  };
 
   function handleRegisterClick() {
     navigate("/register");
@@ -59,34 +58,52 @@ function Login() {
 
   return (
     <div className="login-wrapper">
-      <form className="login" onSubmit={handleLoginClick}>
+      <form className="login" onSubmit={handleSubmit(onSubmit)}>
         <h2>Login</h2>
         <input
           type="email"
-          name="email"
-          required
           placeholder="e-mail"
           autoComplete="username"
-          value={formData.email}
-          onChange={handleChange}
+          {...register("email")}
         />
+        {errors.email && (
+          <span
+            style={{
+              color: "red",
+              fontSize: "12px",
+              display: "block",
+              marginBottom: "10px",
+            }}
+          >
+            {errors.email.message}
+          </span>
+        )}
 
         <input
           type="password"
-          name="password"
-          required
           placeholder="password"
           autoComplete="current-password"
-          value={formData.password}
-          onChange={handleChange}
+          {...register("password")}
         />
+        {errors.password && (
+          <span
+            style={{
+              color: "red",
+              fontSize: "12px",
+              display: "block",
+              marginBottom: "10px",
+            }}
+          >
+            {errors.password.message}
+          </span>
+        )}
 
         {isError && (
           <div
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {error?.response.data.message || "Login error"}
+            {error?.response?.data?.message || error.message || "Login error"}
             {console.log(error.response.data.message)}
           </div>
         )}
