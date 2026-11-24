@@ -12,6 +12,10 @@ function Login() {
   const {
     register,
     handleSubmit,
+    setFocus,
+    setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginUserSchema),
@@ -24,8 +28,6 @@ function Login() {
   const {
     mutate: LoginUserMutation,
     isPending,
-    isError,
-    error,
   } = useMutation({
     mutationFn: async (credentials) => {
       const response = await axios.post("/api/login", credentials, {
@@ -43,6 +45,31 @@ function Login() {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/notes");
     },
+
+    onError: (err) => {
+      setValue("password", "");
+      setFocus("password");
+
+      const responseData = err.response?.data;
+
+      if (responseData.errors) {
+        Object.keys(responseData.errors).forEach((field) => {
+          const serverMessage = Array.isArray(responseData.errors[field])
+            ? responseData.errors[field][0]
+            : responseData.errors[field];
+
+          setError(field, {
+            type: "server",
+            message: serverMessage,
+          });
+        });
+      } else {
+        setError("root", {
+          type: "server",
+          message: responseData?.message || "Login error",
+        });
+      }
+    },
   });
 
   const onSubmit = (data) => {
@@ -56,6 +83,11 @@ function Login() {
     navigate("/register");
   }
 
+  const handleInputChange = (fieldName) => {
+    if (errors[fieldName]) clearErrors(fieldName);
+    if (errors.root) clearErrors("root");
+  };
+
   return (
     <div className="login-wrapper">
       <form className="login" onSubmit={handleSubmit(onSubmit)}>
@@ -64,7 +96,11 @@ function Login() {
           type="email"
           placeholder="e-mail"
           autoComplete="username"
-          {...register("email")}
+          {...register("email", { 
+            onChange: () => {
+            handleInputChange("email");
+          },
+          })}
         />
         {errors.email && (
           <span
@@ -83,7 +119,11 @@ function Login() {
           type="password"
           placeholder="password"
           autoComplete="current-password"
-          {...register("password")}
+          {...register("password", {
+            onChange: () => {
+              handleInputChange("password");
+            },
+          })}
         />
         {errors.password && (
           <span
@@ -98,13 +138,17 @@ function Login() {
           </span>
         )}
 
-        {isError && (
+
+        {errors.root && (
           <div
             className="error-alert"
-            style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
+            style={{ 
+              color: "red", 
+              marginBottom: "15px", 
+              fontSize: "14px" 
+              }}
           >
-            {error?.response?.data?.message || error.message || "Login error"}
-            {console.log(error.response.data.message)}
+            {errors.root.message}
           </div>
         )}
 
