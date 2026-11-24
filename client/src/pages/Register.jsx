@@ -4,9 +4,16 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUserSchema } from "../../../shared/index.js";
+import { useState, useEffect } from "react";
+
+const TICK_INTERVAL = 1000;
+const TOTAL_DELAY = TICK_INTERVAL * 4;
+const COUNTDOWN_SECONDS = TOTAL_DELAY / TICK_INTERVAL;
 
 function Register() {
   const navigate = useNavigate();
+
+  const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
 
   const {
     register,
@@ -14,6 +21,8 @@ function Register() {
     reset,
     setFocus,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerUserSchema),
@@ -24,6 +33,8 @@ function Register() {
   });
 
   const onSubmit = (data) => {
+    if (errors.root) clearErrors("root");
+
     registerUserMutation({
       username: data.email,
       password: data.password,
@@ -37,10 +48,7 @@ function Register() {
   const {
     mutate: registerUserMutation,
     isPending,
-    isError,
-    error,
     isSuccess,
-    reset: resetMutation,
   } = useMutation({
     mutationFn: async (credentials) => {
       const response = await axios.post("/api/register", credentials, {
@@ -57,13 +65,54 @@ function Register() {
       reset();
       setTimeout(() => {
         navigate("/");
-      }, 3000);
+      }, TOTAL_DELAY);
     },
     onError: (err) => {
       setValue("password", "");
       setFocus("password");
+
+      const responseData = err.response?.data;
+
+      if (responseData.errors) {
+        Object.keys(responseData.errors).forEach((field) => {
+          const serverMessage = Array.isArray(responseData.errors[field])
+            ? responseData.errors[field][0]
+            : responseData.errors[field];
+
+          setError(field, {
+            type: "server",
+            message: serverMessage,
+          });
+        });
+      } else {
+        setError("root", {
+          type: "server",
+          message: responseData?.message || "Error during registration",
+        });
+      }
     },
   });
+
+  useEffect(() => {
+    if (!isSuccess) return;
+
+    const timer = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (prevCountdown <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prevCountdown - 1;
+      });
+    }, TICK_INTERVAL);
+
+    return () => clearInterval(timer);
+  }, [isSuccess]);
+
+  const handleInputChange = (fieldName) => {
+    if (errors[fieldName]) clearErrors(fieldName);
+    if (errors.root) clearErrors("root");
+  };
 
   return (
     <div className="login-wrapper">
@@ -75,7 +124,7 @@ function Register() {
           autoComplete="username"
           {...register("email", {
             onChange: () => {
-              if (isError) resetMutation();
+              handleInputChange("email");
             },
           })}
         />
@@ -98,7 +147,7 @@ function Register() {
           autoComplete="new-password"
           {...register("password", {
             onChange: () => {
-              if (isError) resetMutation();
+              handleInputChange("password");
             },
           })}
         />
@@ -115,22 +164,22 @@ function Register() {
           </span>
         )}
 
-        {isError && (
+        {errors.root && (
           <div
             className="error-alert"
             style={{ color: "red", marginBottom: "15px", fontSize: "14px" }}
           >
-            {error?.response?.data?.message ||
-              error.message ||
-              "Error during registration."}
+            {errors.root.message}
           </div>
         )}
         {isSuccess && (
           <div
             className="error-alert"
             style={{ color: "green", marginBottom: "15px", fontSize: "14px" }}
+            role="status"
+            aria-live="polite"
           >
-            User added successfully. Please login.
+            Account created! Redirecting in {countdown}s…
           </div>
         )}
 
