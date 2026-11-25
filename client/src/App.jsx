@@ -8,34 +8,33 @@ import Settings from "./pages/Settings";
 import Notes from "./pages/Notes";
 import { UserProvider } from "./context/userContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import GuestRoute from "./components/GuestRoute.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <UserProvider>
-        {/* <div id="root"> */}
         <div className="app">
           <Header />
           <main>
             <Routes>
+              <Route element={<GuestRoute />}>
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              </Route>
+
+              <Route element={<ProtectedRoute />}>
               <Route
                 path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <Settings />
-                  </ProtectedRoute>
-                }
+                element={<Settings />}
               />
               <Route
                 path="/notes"
                 element={
-                  <ProtectedRoute>
                     <Notes />
-                  </ProtectedRoute>
                 }
               />
+              </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

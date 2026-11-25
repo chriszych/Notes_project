@@ -1,0 +1,23 @@
+import React, { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { UserContext } from "../context/userContext";
+
+function GuestRoute({ children }) {
+  const { user, loadingUser } = useContext(UserContext);
+
+  if (loadingUser) {
+    return (
+      <div>
+        <p>Authorisation checking...</p>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/notes" replace />;
+  }
+
+  return children ? children : <Outlet />;
+}
+
+export default GuestRoute;
