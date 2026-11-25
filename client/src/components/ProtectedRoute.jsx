@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 
 function ProtectedRoute({ children }) {
-  const { user, loadingUser } = useContext(UserContext);
+  const { user, loadingUser, isUserError } = useContext(UserContext);
 
   if (loadingUser) {
     return (
@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
     );
   }
 
-  if (!user) {
+  if (!user || isUserError) {
     return <Navigate to="/" replace />;
   }
 

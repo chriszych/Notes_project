@@ -25,10 +25,10 @@ export function UserProvider({ children }) {
       return null;
     },
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    //staleTime: 5 * 60 * 1000,
   });
 
-  const { mutate: logout, isPending: unLoadingUser } = useMutation({
+  const { mutate: logout, isPending: isLoggingOut } = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
         "/api/logout",
@@ -54,8 +54,9 @@ export function UserProvider({ children }) {
       value={{
         user: isError ? null : user,
         loadingUser,
+        isUserError: isError,
         logout,
-        unLoadingUser,
+        isLoggingOut,
       }}
     >
       {children}
