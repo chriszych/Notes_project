@@ -6,23 +6,23 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (err) => {
-      if (err.response?.status === 401) {
-        const isUserQuery = query.queryKey.includes("user");
-        if (isUserQuery) return;
-        queryClient.clear();
-      }
-    },
-  }),
-  mutationCache: new MutationCache({
-    onError: (err) => {
-      if (err.response?.status === 401) {
-        queryClient.clear();
-        return;
-      }
-    },
-  }),
+  // queryCache: new QueryCache({
+  //   onError: (err) => {
+  //     if (err.response?.status === 401) {
+  //       const isUserQuery = query.queryKey.includes("user");
+  //       if (isUserQuery) return;
+  //       queryClient.clear();
+  //     }
+  //   },
+  // }),
+  // mutationCache: new MutationCache({
+  //   onError: (err) => {
+  //     if (err.response?.status === 401) {
+  //       queryClient.clear();
+  //       return;
+  //     }
+  //   },
+  // }),
   defaultOptions: {
     mutations: {
       onError: (err) => {

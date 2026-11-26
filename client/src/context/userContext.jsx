@@ -14,7 +14,7 @@ export function UserProvider({ children }) {
     data: user,
     isPending: loadingUser,
     isError,
-    error,
+   // error,
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
@@ -25,7 +25,7 @@ export function UserProvider({ children }) {
       return null;
     },
     retry: false,
-    //staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { mutate: logout, isPending: isLoggingOut } = useMutation({
