@@ -5,6 +5,9 @@ import { useContext, useState } from "react";
 import { UserContext } from "../context/userContext";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { changeEmailSchema, changePasswordSchema } from "../../../shared/index.js";
 
 function Settings() {
   const queryClient = useQueryClient();
